@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  # docker-compose up --detach (start)
+  # docker-compose down --remove-orphans --volumes --timeout 0 (stop)
+  nginx:
+    image: nginx:1.21.4-alpine
+    ports:
+      - 8080:80
+    volumes:
+      - ./src:/usr/share/nginx/html
