@@ -5,6 +5,7 @@ const SELECTOR_FREE = 2;
 const SELECTOR_MULTIPLE_FREE = 3;
 
 const EventHandler = new EventManager();
+
 const Selector = function (selector, selectorType) {
     this.selector = selector;
     this.elements = [];
@@ -32,7 +33,7 @@ Selector.prototype.init = function (selectorType) {
     if (!this.elements.length) {
         console.error(`'${this.selector}' doesn't match any element in the DOM tree`);
     }
-}
+};
 
 Selector.prototype.get = function () {
     return this.elements.length > 1 ? this.elements : this.elements[0];
@@ -125,6 +126,7 @@ Selector.prototype.hide = function () {
         el.style.display = 'none';
     });
 };
+
 Selector.prototype.show = function () {
     this.elements.forEach(el => {
         el.style.removeProperty('display');
