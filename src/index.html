@@ -5,9 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blackjack</title>
-    <link rel="stylesheet" href="./style.css" type="text/css" />
+    <link rel="stylesheet" href="./styles/main.css"/>
+    <script defer src="./scripts/index.js" type="module"></script>
   </head>
   <body>
-    <script src="./index.js" type="module"></script>
+    <header>
+        <h1 class="text-center">Poker 21 aka. Blackjack</h1>
+    </header>
+    <main>
+      <section id="bj-game-container" class="bj-game-container">
+        <div class="bj-toolbar"></div>
+        <div class="bj-board">
+          <div class="draw-pile"></div>
+          <div class="hand-pile"></div>
+          <div class="bj-actions">
+            <button id="btn-test1" class="btn-action shut">TEST1</button>
+            <button id="btn-test2" class="btn-action">TEST2</button>
+            <button id="btn-test3" class="btn-action">TEST3</button>
+          </div>
+        </div>
+        <div class="bj-scoreboard"></div>
+      </section>
+      <div class="hidden">
+        <img src="https://datagenetics.com/blog/september52021/deck.png" alt="" width="100" height="100">
+        <img src="https://images.squarespace-cdn.com/content/v1/5abd8db4620b85fa99f15131/1542340370193-2M2GEBIZH1EOVZWXAL2R/Card+Back+2.0+-+Poker+Size+-+Blue_shw.png" alt="" width="auto" height="100">
+      </div>
+    </main>
+    <footer>
+    </footer>
   </body>
 </html>
