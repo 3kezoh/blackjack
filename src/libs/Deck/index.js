@@ -1,4 +1,5 @@
 import DeckService from "./service.js";
+import Card from "../Card/index.js";
 
 export default function Deck() {
   this.deckService = new DeckService();
@@ -38,8 +39,9 @@ Deck.prototype.reshuffle = async function () {
  */
 Deck.prototype.draw = async function () {
   const { cards, remaining } = await this.deckService.draw(this.deck_id, 1);
+  const [card] = cards;
   this.remaining = remaining;
-  return cards[0];
+  return new Card(card);
 };
 
 Deck.prototype[Symbol.asyncIterator] = async function* () {
