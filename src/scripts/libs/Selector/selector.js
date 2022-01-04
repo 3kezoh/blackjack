@@ -151,7 +151,7 @@ Selector.prototype[Symbol.iterator] = function* () {
 export const getById = id => id ? new Selector(id, SELECTOR_ID) : null;
 export const get = selector => selector ? new Selector(selector, SELECTOR_FREE) : null;
 export const getAll = selector => selector ? new Selector(selector, SELECTOR_MULTIPLE_FREE) : null;
-export const clearEvents = () => EventHandler.cleanup();
+export const clearSelectorEvents = () => EventHandler.cleanup();
 
 /*
 ============ Working inheritance but no IDE autocompletion ============

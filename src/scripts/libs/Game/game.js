@@ -1,15 +1,38 @@
-import * as Helper from '../helpers.js';
 import Constants from '../../constants.js';
-import { get, getById, getAll } from '../Selector/selector.js';
+import Player from '../../../libs/Player/index.js';
+import Deck from '../../../libs/Deck/index.js';
+import Displayer from '../Displayer/displayer.js';
+import { get, getById, getAll, clearSelectorEvents } from '../Selector/selector.js';
 
-const Game = function (context) {
-    this.app = context;
-    this.deck = null;
+const Game = function () {
+    this.deck = new Deck();
+    this.player = new Player();
     this.status = Constants.GAME_STATUS_READY;
-    setKeyboardEventsHandler(this);
+};
+
+Game.create = data => {
+    const instance = new Game();
+
+    instance.deck = Deck.create(data.deck);
+    instance.player = Player.create(data.player);
+    instance.status = data.status;
+
+    return instance;
 };
 
 Game.prototype.init = function () {
+    setIntervalCustom(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
+    Displayer.displayNetworkStatus();
+    Displayer.updateDeckRemainingCards(this.deck.remaining);
+    Displayer.updatePlayerScore(this.player.score);
+
+    /* Display player cards when the game is resumed */
+    for (card of this.player) {
+        Displayer.displayPlayerCard(card);
+    }
+
+    /* Event listeners */
+    const self = this;
     getAll('.btn-action').click(function () {
         console.log(this.textContent);
     });
@@ -17,17 +40,14 @@ Game.prototype.init = function () {
 
 Game.prototype.start = function () {
     this.status = Constants.GAME_STATUS_RUNNING;
-    this.attachKeyboard();
 };
 
 Game.prototype.stop = function () {
     this.status = Constants.GAME_STATUS_STOPPED;
-    this.detachKeyboard();
 };
 
 Game.prototype.end = function () {
     this.status = Constants.GAME_STATUS_FINISHED;
-    this.detachKeyboard();
 };
 
 Game.prototype.reset = function () {
@@ -51,41 +71,21 @@ Game.prototype.cancelDraw = function () {
     console.log('cancel draw');
 };
 
-Game.prototype.updateFigures = function () {
-
+Game.prototype.clear = function () {
+    clearAllInterval();
+    clearSelectorEvents();
 };
 
-Game.prototype.displayInstructions = function () {
+const intervalStorage = [];
 
+const setIntervalCustom = (handler, timeout) => {
+    intervalStorage.push(setInterval(handler, timeout));
 };
 
-Game.prototype.displayInfo = function () {
-
-};
-
-Game.prototype.displayResult = function () {
-
-};
-
-Game.prototype.attachKeyboard = function () {
-    document.addEventListener('keydown', this.keyboardEventsHandler);
-};
-
-Game.prototype.detachKeyboard = function () {
-    document.removeEventListener('keydown', this.keyboardEventsHandler);
-};
-
-const setKeyboardEventsHandler = context => {
-    Game.prototype.keyboardEventsHandler = function (event) {
-        switch (event.code) {
-            case "KeyD":
-                context.draw();
-                break;
-            case "KeyC":
-                context.cancelDraw();
-                break;
-        }
-    };
-};
+const clearAllInterval = () => {
+    for (const interval of intervalStorage) {
+        clearInterval(interval);
+    }
+}
 
 export default Game;
