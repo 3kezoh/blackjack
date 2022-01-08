@@ -32,6 +32,23 @@ export default function Card({ value, code, image, suit }) {
    */
   this.isFlipped = false;
 }
+
+/**
+ * Creates a Card instance from a regular object
+ * @returns {Card}
+ */
+ Card.create = data => {
+  const instance = new Card();
+
+  instance.code = data.code;
+  instance.image = data.image;
+  instance.value = data.value;
+  instance.suit = data.suit;
+  instance.isFlipped = data.isFlipped;
+
+  return instance;
+};
+
 /**
  * Flip a card.
  */

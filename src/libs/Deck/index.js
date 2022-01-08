@@ -15,6 +15,19 @@ export default function Deck() {
 }
 
 /**
+ * Creates a Deck instance from a regular object
+ * @returns {Deck}
+ */
+Deck.create = data => {
+  const instance = new Deck();
+
+  instance.deck_id = data.deck_id;
+  instance.remaining = data.remaining;
+
+  return instance;
+};
+
+/**
  * Shuffles the deck.
  */
 Deck.prototype.shuffle = async function () {
