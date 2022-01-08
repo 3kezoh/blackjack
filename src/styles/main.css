@@ -138,10 +138,7 @@ main {
     text-transform: uppercase;
     padding: 0.7rem 2rem;
     margin: 0 1em;
-    transition: 
-        transform 0.1s ease-out, 
-        color .2s ease-out,
-        border-color .2s ease-out;
+    transition: transform 0.1s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
 }
 
 .btn-action:not(:disabled):hover {

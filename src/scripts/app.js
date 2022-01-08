@@ -5,13 +5,12 @@ let keyboardHandler, pageUnloadHandler;
 
 const App = function () {
     this.game = null;
-    this.autoSaveBeforeExit = true;
+    this.autoSaveBeforeExit = false;
     this.init();
 };
 
 App.prototype.run = function () {
     this.game.init();
-    this.game.start();
 };
 
 App.prototype.init = function () {
@@ -30,11 +29,23 @@ App.prototype.exit = function () {
 App.prototype.setKeyboardHandler = function () {
     keyboardHandler = (e) => {
         switch (e.code) {
+            case "Space":
+                this.game.start();
+                break;
+            case "Escape":
+                this.game.stop();
+                break;
+            case "KeyS":
+                this.game.stand();
+                break;
             case "KeyD":
                 this.game.draw();
                 break;
             case "KeyC":
                 this.game.cancelDraw();
+                break;
+            case "KeyR":
+                this.game.restart();
                 break;
         }
     };

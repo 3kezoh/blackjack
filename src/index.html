@@ -21,8 +21,8 @@
         <div class="bj-toolbar flex">
           <div class="col-4">
             <div class="toolbar-actions toolbar-list-left flex items-center">
-              <img id="action-stop" class="toolbar-icon clickable-icon" src="images/shutdown.svg" alt="">
-              <img id="action-restart" class="toolbar-icon clickable-icon" src="images/reload.svg" alt="">
+              <img id="action-stop" class="toolbar-icon clickable-icon hidden" src="images/shutdown.svg" alt="">
+              <img id="action-restart" class="toolbar-icon clickable-icon hidden" src="images/reload.svg" alt="">
             </div>
           </div>
           <span class="col-8"></span>
@@ -41,7 +41,7 @@
         </div>
         <div class="bj-board">
           <div class="main-board">
-            <div class="deck-container">
+            <div class="deck-container initial-center">
               <div class="deck">
                 <img id="action-deck" class="cursor-pointer" src="https://datagenetics.com/blog/september52021/deck.png" alt="" width="auto" height="140"/>
               </div>
@@ -50,12 +50,12 @@
               <div id="player-hand" class="hand"></div>
             </div>
           </div>
-          <div class="bj-actions">
+          <div class="bj-actions hidden">
             <button id="action-hit" class="btn-action">Hit</button>
             <button id="action-stand" class="btn-action" disabled="true">Stand</button>
           </div>
         </div>
-        <div class="bj-scoreboard">
+        <div class="bj-scoreboard hidden">
           <div class="col-2">
             <div class="flex-col justify-start">
               <div class="figure-container">
@@ -63,14 +63,14 @@
                   <img class="figure-icon" src="images/hand.svg" alt=""/>
                   <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
                 </div>
-                <span id="player-score">13</span>
+                <span id="player-score"></span>
               </div>
               <div class="figure-container">
                 <div class="tooltip">
                   <img class="figure-icon" src="images/stack.svg" alt=""/>
                   <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
                 </div>
-                <span id="deck-remaining">53</span>
+                <span id="deck-remaining"></span>
               </div>
             </div>
           </div>

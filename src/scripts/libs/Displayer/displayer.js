@@ -7,6 +7,9 @@ Displayer.prototype.constructor = () => { };
 
 Displayer.displayNetworkStatus = () => {
     const isOnline = window.navigator.onLine;
+    const path = `images/wifi-${isOnline ? 'on' : 'off'}.svg`;
+    get('#wifi > img.toolbar-icon').attr('src', path);
+    get('#wifi > span.tooltip-content').text(isOnline ? 'Online' : 'Offline');
 };
 
 Displayer.displayDrawError = () => { };
