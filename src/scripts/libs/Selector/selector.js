@@ -79,7 +79,7 @@ Selector.prototype.html = function (html) {
     if (html === undefined) return this.elements[0].innerHTML;
 
     this.elements.forEach(el => {
-        el.innerHTML = newVal;
+        el.innerHTML = html;
     });
 };
 
@@ -116,8 +116,17 @@ Selector.prototype.hasClass = function (className) {
 };
 
 Selector.prototype.attr = function (name, value) {
+    if (!name) return null;
+    if (value === undefined) return this.elements[0].getAttribute(name);
+
     this.elements.forEach(el => {
-        el.classList.setAttribute(name, value);
+        el.setAttribute(name, value);
+    });
+};
+
+Selector.prototype.removeAttr = function (name) {
+    this.elements.forEach(el => {
+        el.removeAttribute(name);
     });
 };
 

@@ -14,36 +14,68 @@
   </head>
   <body>
     <header>
-      <h1 class="text-center">Poker 21 aka. Blackjack</h1>
+      <h1 class="text-center">Blackjack</h1>
     </header>
     <main>
       <section id="bj-game-container" class="bj-game-container">
-        <div class="bj-toolbar"></div>
-        <div class="bj-board">
-          <div class="draw-pile"></div>
-          <div class="hand-pile"></div>
-          <div class="bj-actions">
-            <button id="btn-test1" class="btn-action shut">TEST1</button>
-            <button id="btn-test2" class="btn-action">TEST2</button>
-            <button id="btn-test3" class="btn-action">TEST3</button>
+        <div class="bj-toolbar flex">
+          <div class="col-4">
+            <div class="toolbar-actions toolbar-list-left flex items-center">
+              <img id="action-stop" class="toolbar-icon clickable-icon hidden" src="images/shutdown.svg" alt="">
+              <img id="action-restart" class="toolbar-icon clickable-icon hidden" src="images/reload.svg" alt="">
+            </div>
+          </div>
+          <span class="col-8"></span>
+          <div class="col-4">
+            <div class="toolbar-list-right flex justify-end items-center">
+              <div id="info" class="tooltip">
+                <img class="toolbar-icon" src="images/info.svg" alt=""/>
+                <span class="tooltip-content">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cupiditate voluptas explicabo cum sequi asperiores ratione ipsam, non temporibus, dolore autem necessitatibus nam quidem harum labore? Maiores nemo esse dolorem et!</span>
+              </div>
+              <div id="wifi" class="tooltip">
+                <img class="toolbar-icon" src="images/wifi-on.svg" alt=""/>
+                <span class="tooltip-content">Online</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="bj-scoreboard"></div>
+        <div class="bj-board">
+          <div class="main-board">
+            <div class="deck-container initial-center">
+              <div class="deck">
+                <img id="action-deck" class="cursor-pointer" src="https://datagenetics.com/blog/september52021/deck.png" alt="" width="auto" height="140"/>
+              </div>
+            </div>
+            <div class="hand-container">
+              <div id="player-hand" class="hand"></div>
+            </div>
+          </div>
+          <div class="bj-actions hidden">
+            <button id="action-hit" class="btn-action">Hit</button>
+            <button id="action-stand" class="btn-action" disabled="true">Stand</button>
+          </div>
+        </div>
+        <div class="bj-scoreboard hidden">
+          <div class="col-2">
+            <div class="flex-col justify-start">
+              <div class="figure-container">
+                <div class="tooltip">
+                  <img class="figure-icon" src="images/hand.svg" alt=""/>
+                  <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
+                </div>
+                <span id="player-score"></span>
+              </div>
+              <div class="figure-container">
+                <div class="tooltip">
+                  <img class="figure-icon" src="images/stack.svg" alt=""/>
+                  <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
+                </div>
+                <span id="deck-remaining"></span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
-      <div class="hidden">
-        <img
-          src="https://datagenetics.com/blog/september52021/deck.png"
-          alt=""
-          width="100"
-          height="100"
-        />
-        <img
-          src="https://images.squarespace-cdn.com/content/v1/5abd8db4620b85fa99f15131/1542340370193-2M2GEBIZH1EOVZWXAL2R/Card+Back+2.0+-+Poker+Size+-+Blue_shw.png"
-          alt=""
-          width="auto"
-          height="100"
-        />
-      </div>
     </main>
     <footer></footer>
   </body>
