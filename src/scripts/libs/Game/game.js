@@ -33,8 +33,8 @@ Game.prototype.init = function () {
 
     /* Event listeners */
     const self = this;
-    getAll('.btn-action').click(function () {
-        console.log(this.textContent);
+    getById('#action-hit').click(function () {
+        Displayer.displayPlayerCard(null);
     });
 };
 
