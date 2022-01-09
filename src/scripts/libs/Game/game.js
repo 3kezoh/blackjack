@@ -1,5 +1,5 @@
-import Deck from "../../../libs/Deck/index.js";
-import Player from "../../../libs/Player/index.js";
+import Deck from "../Deck/index.js";
+import Player from "../Player/index.js";
 import Constants from "../../constants.js";
 import Displayer from "../Displayer/displayer.js";
 import { clearSelectorEvents, get, getById } from "../Selector/selector.js";
@@ -43,19 +43,23 @@ Game.prototype.isRunning = function () {
     return this.status === Constants.GAME_STATUS_RUNNING;
 };
 
-Game.prototype.start = function () {
+Game.prototype.start = async function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
         return false;
     }
+
     console.log("start");
 
     this.status = Constants.GAME_STATUS_RUNNING;
+
     getById("#action-deck").click(() => this.draw());
     getById("#action-stand").attr("disabled", true);
     getById("#action-stop").removeClass("hidden");
     get(".deck-container").removeClass("initial-center");
     get(".bj-scoreboard").removeClass("hidden");
     get(".bj-actions").removeClass("hidden");
+
+    await this.deck.shuffle();
 };
 
 Game.prototype.stop = function () {
@@ -93,15 +97,23 @@ Game.prototype.stand = function () {
     get(".bj-actions").addClass("hidden");
 };
 
-Game.prototype.draw = function () {
+Game.prototype.draw = async function () {
     if (!this.isRunning()) {
         return false;
     }
-    console.log("draw");
-    getById("#action-restart").removeClass("hidden");
-    getById("#action-stand").removeAttr("disabled");
 
-    Displayer.displayPlayerCard(null);
+    console.log("draw");
+
+    Displayer.displayDrawScene();
+
+    const card = await this.deck.draw();
+
+    console.log("card", card);
+
+    this.player.draw(card);
+
+    Displayer.displayPlayerCard(card);
+    Displayer.updatePlayerScore(this.player.score);
 };
 
 Game.prototype.cancelDraw = function () {
