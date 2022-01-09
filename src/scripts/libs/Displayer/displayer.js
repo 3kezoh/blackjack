@@ -31,7 +31,7 @@ Displayer.updatePlayerScore = (score) => {
 };
 
 Displayer.updateDeckRemainingCards = (remaining) => {
-    get("#deck-remaining").text(50);
+    get("#deck-remaining").text(remaining);
 };
 
 export default Displayer;

@@ -20,8 +20,11 @@ Game.create = (data) => {
     return instance;
 };
 
-Game.prototype.init = function () {
+Game.prototype.init = async function () {
+    await this.deck.shuffle();
+
     setIntervalCustom(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
+
     Displayer.displayNetworkStatus();
     Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
@@ -58,8 +61,6 @@ Game.prototype.start = async function () {
     get(".deck-container").removeClass("initial-center");
     get(".bj-scoreboard").removeClass("hidden");
     get(".bj-actions").removeClass("hidden");
-
-    await this.deck.shuffle();
 };
 
 Game.prototype.stop = function () {
@@ -113,6 +114,7 @@ Game.prototype.draw = async function () {
     this.player.draw(card);
 
     Displayer.displayPlayerCard(card);
+    Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
 };
 
