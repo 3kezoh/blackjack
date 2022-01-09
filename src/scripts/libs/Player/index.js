@@ -33,7 +33,21 @@ Player.create = (data) => {
  */
 Player.prototype.draw = function (card) {
     this.hand.push(card);
-    this.score += Number.parseInt(card.value);
+
+    switch (card.value) {
+        case "ACE":
+            break;
+
+        case "KING":
+        case "QUEEN":
+        case "JACK":
+            this.score += 10;
+            break;
+
+        default:
+            this.score += Number.parseInt(card.value);
+            break;
+    }
 };
 
 Player.prototype[Symbol.iterator] = function* () {
