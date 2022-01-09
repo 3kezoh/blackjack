@@ -1,8 +1,7 @@
-import { get } from "../Selector/selector.js";
+import Card from "../Card/index.js";
+import { get, getById } from "../Selector/selector.js";
 
 const Displayer = function () {};
-
-Displayer.prototype.constructor = () => {};
 
 Displayer.displayNetworkStatus = () => {
     const isOnline = window.navigator.onLine;
@@ -15,17 +14,24 @@ Displayer.displayDrawError = () => {};
 
 Displayer.displayFinalResult = (hasWon) => {};
 
-Displayer.displayPlayerCard = (card) => {
-    const imgUrl = "https://deckofcardsapi.com/static/img/KH.png";
-    get("#player-hand").append(`<img class="hand-card" alt="" src="${imgUrl}"/>`);
+/**
+ * @param {Card} card
+ */
+Displayer.displayPlayerCard = ({ image }) => {
+    get("#player-hand").append(`<img class="hand-card" alt="" src="${image}"/>`);
+};
+
+Displayer.displayDrawScene = () => {
+    getById("#action-restart").removeClass("hidden");
+    getById("#action-stand").removeAttr("disabled");
 };
 
 Displayer.updatePlayerScore = (score) => {
-    get("#player-score").text(13);
+    get("#player-score").text(score);
 };
 
 Displayer.updateDeckRemainingCards = (remaining) => {
-    get("#deck-remaining").text(50);
+    get("#deck-remaining").text(remaining);
 };
 
 export default Displayer;
