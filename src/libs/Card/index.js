@@ -7,51 +7,51 @@
  * @param {string} card.suit
  */
 export default function Card({ value, code, image, suit }) {
-  /**
-   * @type {string}
-   */
-  this.code = code;
+    /**
+     * @type {string}
+     */
+    this.code = code;
 
-  /**
-   * @type {string}
-   */
-  this.image = image;
+    /**
+     * @type {string}
+     */
+    this.image = image;
 
-  /**
-   * @type {string}
-   */
-  this.value = value;
+    /**
+     * @type {string}
+     */
+    this.value = value;
 
-  /**
-   * @type {string}
-   */
-  this.suit = suit;
+    /**
+     * @type {string}
+     */
+    this.suit = suit;
 
-  /**
-   * @type {boolean}
-   */
-  this.isFlipped = false;
+    /**
+     * @type {boolean}
+     */
+    this.isFlipped = false;
 }
 
 /**
  * Creates a Card instance from a regular object
  * @returns {Card}
  */
- Card.create = data => {
-  const instance = new Card();
+Card.create = (data) => {
+    const instance = new Card();
 
-  instance.code = data.code;
-  instance.image = data.image;
-  instance.value = data.value;
-  instance.suit = data.suit;
-  instance.isFlipped = data.isFlipped;
+    instance.code = data.code;
+    instance.image = data.image;
+    instance.value = data.value;
+    instance.suit = data.suit;
+    instance.isFlipped = data.isFlipped;
 
-  return instance;
+    return instance;
 };
 
 /**
  * Flip a card.
  */
 Card.prototype.flip = function () {
-  this.isFlipped = !this.isFlipped;
+    this.isFlipped = !this.isFlipped;
 };

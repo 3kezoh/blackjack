@@ -1,30 +1,30 @@
 import Card from "../Card/index.js";
 
 export default function Player() {
-  /**
-   * @type {Card[]}
-   */
-  this.hand = [];
+    /**
+     * @type {Card[]}
+     */
+    this.hand = [];
 
-  /**
-   * @type {number}
-   */
-  this.score = 0;
+    /**
+     * @type {number}
+     */
+    this.score = 0;
 }
 
 /**
  * Creates a Player instance from a regular object
  * @returns {Player}
  */
-Player.create = data => {
-  const instance = new Player();
+Player.create = (data) => {
+    const instance = new Player();
 
-  instance.score = data.score;
-  for (const card of data.hand) {
-    instance.hand.push(Card.create(card));
-  }
+    instance.score = data.score;
+    for (const card of data.hand) {
+        instance.hand.push(Card.create(card));
+    }
 
-  return instance;
+    return instance;
 };
 
 /**
@@ -32,12 +32,12 @@ Player.create = data => {
  * @param {Card} card
  */
 Player.prototype.draw = function (card) {
-  this.hand.push(card);
-  this.score += Number.parseInt(card.value);
+    this.hand.push(card);
+    this.score += Number.parseInt(card.value);
 };
 
 Player.prototype[Symbol.iterator] = function* () {
-  for (const card of this.hand) {
-    yield card;
-  }
+    for (const card of this.hand) {
+        yield card;
+    }
 };

@@ -16,7 +16,7 @@ Selector.prototype.init = function (selectorType) {
     let elements;
     switch (selectorType) {
         case SELECTOR_ID:
-            elements = document.getElementById(this.selector.replace(/^#/, ''));
+            elements = document.getElementById(this.selector.replace(/^#/, ""));
             elements && this.elements.push(elements);
             break;
         case SELECTOR_FREE:
@@ -27,7 +27,8 @@ Selector.prototype.init = function (selectorType) {
             elements = document.querySelectorAll(this.selector);
             elements && (this.elements = Array.from(elements));
             break;
-        default: return;
+        default:
+            return;
     }
 
     if (!this.elements.length) {
@@ -40,29 +41,29 @@ Selector.prototype.get = function () {
 };
 
 Selector.prototype.on = function (event, callback) {
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         EventHandler.bind(el, event, callback);
     });
 };
 
 Selector.prototype.off = function (event) {
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         EventHandler.unbind(el, event ?? null);
     });
 };
 
 Selector.prototype.click = function (callback) {
-    this.on('click', callback);
+    this.on("click", callback);
 };
 
 Selector.prototype.change = function (callback) {
-    this.on('change', callback);
+    this.on("change", callback);
 };
 
 Selector.prototype.append = function (html) {
     if (html === undefined) return null;
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.innerHTML = el.innerHTML + html;
     });
 };
@@ -70,7 +71,7 @@ Selector.prototype.append = function (html) {
 Selector.prototype.prepend = function (html) {
     if (html === undefined) return null;
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.innerHTML = html + el.innerHTML;
     });
 };
@@ -78,7 +79,7 @@ Selector.prototype.prepend = function (html) {
 Selector.prototype.html = function (html) {
     if (html === undefined) return this.elements[0].innerHTML;
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.innerHTML = html;
     });
 };
@@ -86,27 +87,27 @@ Selector.prototype.html = function (html) {
 Selector.prototype.val = function (value) {
     if (value === undefined) return this.elements[0].value;
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.value = value;
     });
 };
 
 Selector.prototype.text = function (text) {
-    if (text === undefined) return this.elements.map(el => el.textContent).join(' ');
+    if (text === undefined) return this.elements.map((el) => el.textContent).join(" ");
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.textContent = text;
     });
 };
 
 Selector.prototype.addClass = function (...classNames) {
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.classList.add(...classNames);
     });
 };
 
 Selector.prototype.removeClass = function (...classNames) {
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.classList.remove(...classNames);
     });
 };
@@ -119,26 +120,26 @@ Selector.prototype.attr = function (name, value) {
     if (!name) return null;
     if (value === undefined) return this.elements[0].getAttribute(name);
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.setAttribute(name, value);
     });
 };
 
 Selector.prototype.removeAttr = function (name) {
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.removeAttribute(name);
     });
 };
 
 Selector.prototype.hide = function () {
-    this.elements.forEach(el => {
-        el.style.display = 'none';
+    this.elements.forEach((el) => {
+        el.style.display = "none";
     });
 };
 
 Selector.prototype.show = function () {
-    this.elements.forEach(el => {
-        el.style.removeProperty('display');
+    this.elements.forEach((el) => {
+        el.style.removeProperty("display");
     });
 };
 
@@ -146,7 +147,7 @@ Selector.prototype.css = function (property, value) {
     if (!property) return null;
     if (value === undefined) return this.elements[0].style[property];
 
-    this.elements.forEach(el => {
+    this.elements.forEach((el) => {
         el.style[property] = value;
     });
 };
@@ -157,9 +158,10 @@ Selector.prototype[Symbol.iterator] = function* () {
     }
 };
 
-export const getById = id => id ? new Selector(id, SELECTOR_ID) : null;
-export const get = selector => selector ? new Selector(selector, SELECTOR_FREE) : null;
-export const getAll = selector => selector ? new Selector(selector, SELECTOR_MULTIPLE_FREE) : null;
+export const getById = (id) => (id ? new Selector(id, SELECTOR_ID) : null);
+export const get = (selector) => (selector ? new Selector(selector, SELECTOR_FREE) : null);
+export const getAll = (selector) =>
+    selector ? new Selector(selector, SELECTOR_MULTIPLE_FREE) : null;
 export const clearSelectorEvents = () => EventHandler.cleanup();
 
 /*

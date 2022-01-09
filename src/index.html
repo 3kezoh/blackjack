@@ -1,82 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blackjack</title>
-    <link rel="stylesheet" href="./styles/main.css" type="text/css" />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>"
-    />
-    <script defer src="./scripts/index.js" type="module"></script>
-  </head>
-  <body>
-    <header>
-      <h1 class="text-center">Blackjack</h1>
-    </header>
-    <main>
-      <section id="bj-game-container" class="bj-game-container">
-        <div class="bj-toolbar flex">
-          <div class="col-4">
-            <div class="toolbar-actions toolbar-list-left flex items-center">
-              <img id="action-stop" class="toolbar-icon clickable-icon hidden" src="images/shutdown.svg" alt="">
-              <img id="action-restart" class="toolbar-icon clickable-icon hidden" src="images/reload.svg" alt="">
-            </div>
-          </div>
-          <span class="col-8"></span>
-          <div class="col-4">
-            <div class="toolbar-list-right flex justify-end items-center">
-              <div id="info" class="tooltip">
-                <img class="toolbar-icon" src="images/info.svg" alt=""/>
-                <span class="tooltip-content">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Cupiditate voluptas explicabo cum sequi asperiores ratione ipsam, non temporibus, dolore autem necessitatibus nam quidem harum labore? Maiores nemo esse dolorem et!</span>
-              </div>
-              <div id="wifi" class="tooltip">
-                <img class="toolbar-icon" src="images/wifi-on.svg" alt=""/>
-                <span class="tooltip-content">Online</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="bj-board">
-          <div class="main-board">
-            <div class="deck-container initial-center">
-              <div class="deck">
-                <img id="action-deck" class="cursor-pointer" src="https://datagenetics.com/blog/september52021/deck.png" alt="" width="auto" height="140"/>
-              </div>
-            </div>
-            <div class="hand-container">
-              <div id="player-hand" class="hand"></div>
-            </div>
-          </div>
-          <div class="bj-actions hidden">
-            <button id="action-hit" class="btn-action">Hit</button>
-            <button id="action-stand" class="btn-action" disabled="true">Stand</button>
-          </div>
-        </div>
-        <div class="bj-scoreboard hidden">
-          <div class="col-2">
-            <div class="flex-col justify-start">
-              <div class="figure-container">
-                <div class="tooltip">
-                  <img class="figure-icon" src="images/hand.svg" alt=""/>
-                  <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Blackjack</title>
+        <link rel="stylesheet" href="./styles/main.css" type="text/css" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>" />
+        <script defer src="./scripts/index.js" type="module"></script>
+    </head>
+    <body>
+        <header>
+            <h1 class="text-center">Blackjack</h1>
+        </header>
+        <main>
+            <section id="bj-game-container" class="bj-game-container">
+                <div class="bj-toolbar flex">
+                    <div class="col-4">
+                        <div class="toolbar-actions toolbar-list-left flex items-center">
+                            <img
+                                id="action-stop"
+                                class="toolbar-icon clickable-icon hidden"
+                                src="images/shutdown.svg"
+                                alt="" />
+                            <img
+                                id="action-restart"
+                                class="toolbar-icon clickable-icon hidden"
+                                src="images/reload.svg"
+                                alt="" />
+                        </div>
+                    </div>
+                    <span class="col-8"></span>
+                    <div class="col-4">
+                        <div class="toolbar-list-right flex justify-end items-center">
+                            <div id="info" class="tooltip">
+                                <img class="toolbar-icon" src="images/info.svg" alt="" />
+                                <span class="tooltip-content"
+                                    >Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                                    Cupiditate voluptas explicabo cum sequi asperiores ratione
+                                    ipsam, non temporibus, dolore autem necessitatibus nam quidem
+                                    harum labore? Maiores nemo esse dolorem et!</span
+                                >
+                            </div>
+                            <div id="wifi" class="tooltip">
+                                <img class="toolbar-icon" src="images/wifi-on.svg" alt="" />
+                                <span class="tooltip-content">Online</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <span id="player-score"></span>
-              </div>
-              <div class="figure-container">
-                <div class="tooltip">
-                  <img class="figure-icon" src="images/stack.svg" alt=""/>
-                  <span class="tooltip-content">Lorem ipsum dolor dolorem et!</span>
+                <div class="bj-board">
+                    <div class="main-board">
+                        <div class="deck-container initial-center">
+                            <div class="deck">
+                                <img
+                                    id="action-deck"
+                                    class="cursor-pointer"
+                                    src="https://datagenetics.com/blog/september52021/deck.png"
+                                    alt=""
+                                    width="auto"
+                                    height="140" />
+                            </div>
+                        </div>
+                        <div class="hand-container">
+                            <div id="player-hand" class="hand"></div>
+                        </div>
+                    </div>
+                    <div class="bj-actions hidden">
+                        <button id="action-hit" class="btn-action">Hit</button>
+                        <button id="action-stand" class="btn-action" disabled="true">Stand</button>
+                    </div>
                 </div>
-                <span id="deck-remaining"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <footer></footer>
-  </body>
+                <div class="bj-scoreboard hidden">
+                    <div class="col-2">
+                        <div class="flex-col justify-start">
+                            <div class="figure-container">
+                                <div class="tooltip">
+                                    <img class="figure-icon" src="images/hand.svg" alt="" />
+                                    <span class="tooltip-content"
+                                        >Lorem ipsum dolor dolorem et!</span
+                                    >
+                                </div>
+                                <span id="player-score"></span>
+                            </div>
+                            <div class="figure-container">
+                                <div class="tooltip">
+                                    <img class="figure-icon" src="images/stack.svg" alt="" />
+                                    <span class="tooltip-content"
+                                        >Lorem ipsum dolor dolorem et!</span
+                                    >
+                                </div>
+                                <span id="deck-remaining"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer></footer>
+    </body>
 </html>

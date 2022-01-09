@@ -21,8 +21,8 @@ App.prototype.init = function () {
 };
 
 App.prototype.exit = function () {
-    window.removeEventListener('beforeunload', pageUnloadHandler);
-    document.removeEventListener('keydown', keyboardHandler);
+    window.removeEventListener("beforeunload", pageUnloadHandler);
+    document.removeEventListener("keydown", keyboardHandler);
     this.game.clear();
 };
 
@@ -50,7 +50,7 @@ App.prototype.setKeyboardHandler = function () {
         }
     };
 
-    document.addEventListener('keydown', keyboardHandler);
+    document.addEventListener("keydown", keyboardHandler);
 };
 
 App.prototype.setPageUnloadHandler = function () {
@@ -61,15 +61,16 @@ App.prototype.setPageUnloadHandler = function () {
         this.exit();
     };
 
-    window.addEventListener('beforeunload', pageUnloadHandler);
+    window.addEventListener("beforeunload", pageUnloadHandler);
 };
 
-const saveCurrentState = data => localStorage.setItem(Constants.LOCAL_STORAGE_KEY, JSON.stringify(data));
+const saveCurrentState = (data) =>
+    localStorage.setItem(Constants.LOCAL_STORAGE_KEY, JSON.stringify(data));
 
 const getSavedState = () => JSON.parse(localStorage.getItem(Constants.LOCAL_STORAGE_KEY));
 
 const clearStorage = () => localStorage.clear();
 
-const gameDidRunBefore = () => localStorage.getItem(Constants.LOCAL_STORAGE_KEY) ? true : false;
+const gameDidRunBefore = () => (localStorage.getItem(Constants.LOCAL_STORAGE_KEY) ? true : false);
 
 export default App;
