@@ -79,8 +79,7 @@ Game.prototype.stop = function () {
 };
 
 Game.prototype.restart = function () {
-    let hasCards = getById("#player-hand").html() !== ""; // TODO: change this condition with some Player.hasCard function
-    if (!this.isRunning() || !hasCards) {
+    if (!this.isRunning() || this.player.isHandEmpty()) {
         return false;
     }
     console.log("restart");
@@ -88,9 +87,8 @@ Game.prototype.restart = function () {
     this.start();
 };
 
-Game.prototype.stand = function () {
-    let hasCards = getById("#player-hand").html() !== ""; // TODO: change this condition with some Player.hasCard function
-    if (!this.isRunning() || !hasCards) {
+Game.prototype.stand = async function () {
+    if (!this.isRunning() || this.player.isHandEmpty()) {
         return false;
     }
     console.log("stand");
