@@ -26,8 +26,8 @@ Game.prototype.init = async function () {
     setIntervalCustom(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
 
     Displayer.displayNetworkStatus();
-    Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
+    Displayer.updateDeckRemainingCards(this.deck.remaining);
 
     /* Display player cards when the game is resumed */
     for (card of this.player) {
@@ -63,12 +63,21 @@ Game.prototype.start = async function () {
     get(".bj-actions").removeClass("hidden");
 };
 
-Game.prototype.stop = function () {
+Game.prototype.stop = async function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return false;
     }
+
     console.log("stop");
+
     this.status = Constants.GAME_STATUS_READY;
+
+    this.player.score = 0;
+    await this.deck.reshuffle();
+
+    Displayer.updatePlayerScore(this.player.score);
+    Displayer.updateDeckRemainingCards(this.deck.remaining);
+
     getById("#player-hand").html("");
     getById("#action-deck").click(() => this.start());
     getById("#action-stop").addClass("hidden");
