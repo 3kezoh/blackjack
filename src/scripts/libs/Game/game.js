@@ -91,16 +91,27 @@ Game.prototype.stand = async function () {
     if (!this.isRunning() || this.player.isHandEmpty()) {
         return false;
     }
+
     console.log("stand");
+
     this.status = Constants.GAME_STATUS_FINISHED;
-    get(".bj-actions").addClass("hidden");
+
+    Displayer.displayStandScene();
+
+    if (this.player.score < 21) {
+        await this.draw();
+
+        if (this.player.score > 21) {
+            console.log("win");
+        } else {
+            console.log("loose");
+        }
+
+        return this.stop();
+    }
 };
 
 Game.prototype.draw = async function () {
-    if (!this.isRunning()) {
-        return false;
-    }
-
     console.log("draw");
 
     Displayer.displayDrawScene();
@@ -114,6 +125,10 @@ Game.prototype.draw = async function () {
     Displayer.displayPlayerCard(card);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
+
+    if (this.isRunning()) {
+        await this.check();
+    }
 };
 
 Game.prototype.cancelDraw = function () {
@@ -126,6 +141,20 @@ Game.prototype.cancelDraw = function () {
 Game.prototype.clear = function () {
     clearAllInterval();
     clearSelectorEvents();
+};
+
+Game.prototype.check = async function () {
+    console.log("check");
+
+    if (this.player.score === 21) {
+        console.log("win");
+        return this.stop();
+    }
+
+    if (this.player.score > 21) {
+        console.log("loose");
+        return this.stop();
+    }
 };
 
 const intervalStorage = [];
