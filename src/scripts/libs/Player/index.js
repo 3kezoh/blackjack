@@ -50,6 +50,13 @@ Player.prototype.draw = function (card) {
     }
 };
 
+/**
+ * @returns {boolean}
+ */
+Player.prototype.isHandEmpty = function () {
+    return this.hand.length === 0;
+};
+
 Player.prototype[Symbol.iterator] = function* () {
     for (const card of this.hand) {
         yield card;

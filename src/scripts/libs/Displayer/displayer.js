@@ -21,17 +21,21 @@ Displayer.displayPlayerCard = ({ image }) => {
     get("#player-hand").append(`<img class="hand-card" alt="" src="${image}"/>`);
 };
 
-Displayer.displayDrawScene = () => {
-    getById("#action-restart").removeClass("hidden");
-    getById("#action-stand").removeAttr("disabled");
-};
-
 Displayer.updatePlayerScore = (score) => {
     get("#player-score").text(score);
 };
 
 Displayer.updateDeckRemainingCards = (remaining) => {
     get("#deck-remaining").text(remaining);
+};
+
+Displayer.displayDrawScene = () => {
+    getById("#action-restart").removeClass("hidden");
+    getById("#action-stand").removeAttr("disabled");
+};
+
+Displayer.displayStandScene = () => {
+    get(".bj-actions").addClass("hidden");
 };
 
 export default Displayer;
