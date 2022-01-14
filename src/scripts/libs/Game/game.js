@@ -21,16 +21,17 @@ Game.create = (data) => {
 };
 
 Game.prototype.init = async function () {
-    await this.deck.shuffle();
-
     setIntervalCustom(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
 
-    Displayer.displayNetworkStatus();
+    if (!this.isRunning()) {
+        await this.deck.shuffle();
+    }
+
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
 
     /* Display player cards when the game is resumed */
-    for (card of this.player) {
+    for (const card of this.player) {
         Displayer.displayPlayerCard(card);
     }
 
@@ -40,6 +41,11 @@ Game.prototype.init = async function () {
     getById("#action-restart").click(() => this.restart());
     getById("#action-stand").click(() => this.stand());
     getById("#action-hit").click(() => this.draw());
+
+    if (this.isRunning()) {
+        this.status = Constants.GAME_STATUS_READY;
+        this.start();
+    }
 };
 
 Game.prototype.isRunning = function () {
@@ -48,10 +54,8 @@ Game.prototype.isRunning = function () {
 
 Game.prototype.start = async function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
-        return false;
+        return;
     }
-
-    console.log("start");
 
     this.status = Constants.GAME_STATUS_RUNNING;
 
@@ -61,22 +65,18 @@ Game.prototype.start = async function () {
     get(".deck-container").removeClass("initial-center");
     get(".bj-scoreboard").removeClass("hidden");
     get(".bj-actions").removeClass("hidden");
+    console.log("start", this.status);
 };
 
 Game.prototype.stop = async function () {
     if (this.status === Constants.GAME_STATUS_READY) {
-        return false;
+        return;
     }
-
     console.log("stop");
 
     this.status = Constants.GAME_STATUS_READY;
-
     this.player.score = 0;
-    await this.deck.reshuffle();
-
-    Displayer.updatePlayerScore(this.player.score);
-    Displayer.updateDeckRemainingCards(this.deck.remaining);
+    this.player.hand = [];
 
     getById("#player-hand").html("");
     getById("#action-deck").click(() => this.start());
@@ -85,11 +85,15 @@ Game.prototype.stop = async function () {
     get(".deck-container").addClass("initial-center");
     get(".bj-scoreboard").addClass("hidden");
     get(".bj-actions").addClass("hidden");
+
+    await this.deck.reshuffle();
+    Displayer.updatePlayerScore(this.player.score);
+    Displayer.updateDeckRemainingCards(this.deck.remaining);
 };
 
 Game.prototype.restart = function () {
     if (!this.isRunning() || this.player.isHandEmpty()) {
-        return false;
+        return;
     }
     console.log("restart");
     this.stop();
@@ -98,7 +102,7 @@ Game.prototype.restart = function () {
 
 Game.prototype.stand = async function () {
     if (!this.isRunning() || this.player.isHandEmpty()) {
-        return false;
+        return;
     }
 
     console.log("stand");
@@ -121,6 +125,9 @@ Game.prototype.stand = async function () {
 };
 
 Game.prototype.draw = async function () {
+    if (!this.isRunning()) {
+        return;
+    }
     console.log("draw");
 
     Displayer.displayDrawScene();
@@ -170,6 +177,7 @@ const intervalStorage = [];
 
 const setIntervalCustom = (handler, timeout) => {
     intervalStorage.push(setInterval(handler, timeout));
+    handler();
 };
 
 const clearAllInterval = () => {
