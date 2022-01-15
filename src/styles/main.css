@@ -2,6 +2,7 @@
 
 main {
     width: 100%;
+    font-family: "Roboto", sans-serif;
 }
 
 .bj-game-container {
@@ -13,12 +14,35 @@ main {
     margin: 2rem auto;
     border-radius: 0.5em;
     background: linear-gradient(160deg, #1a4a1c, #308834 600px);
-    /* border: 1px solid black; */
+    position: relative;
 }
 
 .bj-toolbar {
     flex: 0.1;
     width: 100%;
+}
+
+.bj-toolbar .game-state-info {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.game-state-info .endgame {
+    width: fit-content;
+    border: 1px solid #ffd55c;
+    border-radius: 0.5em;
+    padding: 0.5em 2.5em;
+    color: #ffd55c;
+}
+
+.game-state-info .endgame:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+    transition: transform 0.1s;
 }
 
 .toolbar-icon {
@@ -108,7 +132,7 @@ main {
 .hand-card:hover {
     transform: translateY(-5px);
     box-shadow: 2px 2px 8px 3px #333;
-    z-index: 20;
+    z-index: 1;
 }
 
 .bj-board .bj-actions {
@@ -169,6 +193,114 @@ main {
 
 .figure-container .tooltip-content {
     font-size: 1rem;
+}
+
+.bj-final-modal {
+    display: none;
+    position: absolute;
+    z-index: 3;
+    padding: 5%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5em;
+    color: white;
+}
+
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid #888;
+    border-radius: 14px;
+    margin: auto;
+    padding: 1.5em 1em;
+    top: 50%;
+    width: 60%;
+    transform: translateY(-50%);
+    background: linear-gradient(to bottom, #f76007, #edaa13 320px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    animation: pop-modal 0.2s;
+}
+
+.modal-close {
+    color: white;
+    float: right;
+    font-size: 25px;
+    font-weight: bold;
+    position: absolute;
+    right: 9px;
+    top: 0;
+}
+
+.modal-close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bj-final-modal .modal-icon {
+    height: 1.2em;
+    width: auto;
+    transform: translateY(5px);
+}
+
+.bj-final-modal .modal-title > h1 {
+    text-align: center;
+    font-style: oblique;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 1.75em;
+    text-shadow: 2px 2px #424242;
+}
+
+.bj-final-modal .modal-content {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 2rem 0.5rem;
+}
+
+.modal-content > .next-card > p,
+.modal-content > .final-score > p {
+    padding-bottom: 1em;
+    text-align: center;
+}
+.modal-content > .next-card,
+.modal-content > .final-score {
+    height: 90%;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-content > .final-score > h2 {
+    font-size: 2.5em;
+    justify-self: center;
+}
+
+.bj-final-modal .modal-card {
+    height: 125px;
+    width: auto;
+}
+
+.bj-final-modal .modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes pop-modal {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 50;
+        opacity: 1;
+    }
 }
 
 @keyframes draw-card {

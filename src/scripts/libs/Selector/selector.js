@@ -140,6 +140,9 @@ Selector.prototype.hide = function () {
 Selector.prototype.show = function () {
     this.elements.forEach((el) => {
         el.style.removeProperty("display");
+        if (getComputedStyle(el).display === "none") {
+            el.style.display = "block";
+        }
     });
 };
 
@@ -150,6 +153,14 @@ Selector.prototype.css = function (property, value) {
     this.elements.forEach((el) => {
         el.style[property] = value;
     });
+};
+
+Selector.prototype.hidden = function () {
+    this.addClass("hidden");
+};
+
+Selector.prototype.visible = function () {
+    this.removeClass("hidden");
 };
 
 Selector.prototype[Symbol.iterator] = function* () {

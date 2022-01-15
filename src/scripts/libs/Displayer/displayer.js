@@ -12,7 +12,9 @@ Displayer.displayNetworkStatus = () => {
 
 Displayer.displayDrawError = () => {};
 
-Displayer.displayFinalResult = (hasWon) => {};
+Displayer.displayFinalResult = (hasWon) => {
+    get(".bj-final-modal").show();
+};
 
 /**
  * @param {Card} card
@@ -30,12 +32,12 @@ Displayer.updateDeckRemainingCards = (remaining) => {
 };
 
 Displayer.displayDrawScene = () => {
-    getById("#action-restart").removeClass("hidden");
+    getById("#action-restart").visible();
     getById("#action-stand").removeAttr("disabled");
 };
 
 Displayer.displayStandScene = () => {
-    get(".bj-actions").addClass("hidden");
+    get(".bj-actions").hidden();
 };
 
 export default Displayer;

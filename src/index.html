@@ -32,7 +32,13 @@
                                 alt="" />
                         </div>
                     </div>
-                    <span class="col-8"></span>
+                    <span class="col-8 position-relative">
+                        <div id="game-state-info" class="game-state-info">
+                            <div class="endgame">
+                                <span>This round is over. View details</span>
+                            </div>
+                        </div>
+                    </span>
                     <div class="col-4">
                         <div class="toolbar-list-right flex justify-end items-center">
                             <div id="info" class="tooltip">
@@ -94,6 +100,44 @@
                                 </div>
                                 <span id="deck-remaining"></span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bj-final-modal">
+                    <div class="modal-container">
+                        <span class="modal-close">&times;</span>
+                        <div class="modal-title">
+                            <h1>
+                                <img class="modal-icon" src="images/cup.svg" alt="" />
+                                <label>You won</label>
+                                <img class="modal-icon" src="images/cup.svg" alt="" />
+                            </h1>
+                        </div>
+                        <div class="modal-content">
+                            <div class="next-card">
+                                <p>The next card is</p>
+                                <img
+                                    class="modal-card"
+                                    alt=""
+                                    src="https://deckofcardsapi.com/static/img/8H.png" />
+                            </div>
+                            <div class="final-score">
+                                <p>Your final score is</p>
+                                <h2 id="final-score">25</h2>
+                            </div>
+                            <div class="auto-win">
+                                <p>Perfect strike ! Lucky day</p>
+                            </div>
+                            <div class="auto-lost">
+                                <p>
+                                    Oops, looks like you were too greedy...
+                                    <img class="modal-icon" src="images/sad.svg" alt="" />
+                                </p>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button id="action-replay" class="btn-action">Play again</button>
+                            <button id="action-quit" class="btn-action">Quit</button>
                         </div>
                     </div>
                 </div>

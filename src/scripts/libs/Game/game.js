@@ -41,6 +41,13 @@ Game.prototype.init = async function () {
     getById("#action-restart").click(() => this.restart());
     getById("#action-stand").click(() => this.stand());
     getById("#action-hit").click(() => this.draw());
+    get(".endgame").click(() => Displayer.displayFinalResult());
+    get(".bj-final-modal").click(({ target: { classList } }) => {
+        // Destructuring event.target.classList => get user clicked element classlist within the modal
+        if (classList.contains("bj-final-modal") || classList.contains("modal-close")) {
+            get(".bj-final-modal").hide();
+        }
+    });
 
     if (this.isRunning()) {
         this.status = Constants.GAME_STATUS_READY;
@@ -57,15 +64,15 @@ Game.prototype.start = async function () {
         return;
     }
 
+    console.log("start");
     this.status = Constants.GAME_STATUS_RUNNING;
 
     getById("#action-deck").click(() => this.draw());
     getById("#action-stand").attr("disabled", true);
-    getById("#action-stop").removeClass("hidden");
+    getById("#action-stop").visible();
+    get(".bj-scoreboard").visible();
+    get(".bj-actions").visible();
     get(".deck-container").removeClass("initial-center");
-    get(".bj-scoreboard").removeClass("hidden");
-    get(".bj-actions").removeClass("hidden");
-    console.log("start", this.status);
 };
 
 Game.prototype.stop = async function () {
@@ -80,11 +87,11 @@ Game.prototype.stop = async function () {
 
     getById("#player-hand").html("");
     getById("#action-deck").click(() => this.start());
-    getById("#action-stop").addClass("hidden");
-    getById("#action-restart").addClass("hidden");
+    getById("#action-stop").hidden();
+    getById("#action-restart").hidden();
+    get(".bj-scoreboard").hidden();
+    get(".bj-actions").hidden();
     get(".deck-container").addClass("initial-center");
-    get(".bj-scoreboard").addClass("hidden");
-    get(".bj-actions").addClass("hidden");
 
     await this.deck.reshuffle();
     Displayer.updatePlayerScore(this.player.score);
