@@ -32,6 +32,7 @@ main {
 }
 
 .game-state-info .endgame {
+    display: none;
     width: fit-content;
     border: 1px solid #ffd55c;
     border-radius: 0.5em;
@@ -68,7 +69,6 @@ main {
 
 .bj-board .main-board {
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     width: 100%;
     height: 100%;
@@ -262,13 +262,13 @@ main {
     padding: 2rem 0.5rem;
 }
 
-.modal-content > .next-card > p,
-.modal-content > .final-score > p {
+.modal-content > .modal-next-card > p,
+.modal-content > .modal-final-score > p {
     padding-bottom: 1em;
     text-align: center;
 }
-.modal-content > .next-card,
-.modal-content > .final-score {
+.modal-content > .modal-next-card,
+.modal-content > .modal-final-score {
     height: 90%;
     padding: 0 1em;
     display: flex;
@@ -276,13 +276,13 @@ main {
     align-items: center;
 }
 
-.modal-content > .final-score > h2 {
+.modal-content > .modal-final-score > h2 {
     font-size: 2.5em;
     justify-self: center;
 }
 
 .bj-final-modal .modal-card {
-    height: 125px;
+    height: 150px;
     width: auto;
 }
 

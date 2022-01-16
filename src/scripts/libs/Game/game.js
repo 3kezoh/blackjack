@@ -2,6 +2,7 @@ import Deck from "../Deck/index.js";
 import Player from "../Player/index.js";
 import Constants from "../../constants.js";
 import Displayer from "../Displayer/displayer.js";
+import Card from "../Card/index.js";
 import { clearSelectorEvents, get, getById } from "../Selector/selector.js";
 
 const Game = function () {
@@ -35,17 +36,19 @@ Game.prototype.init = async function () {
         Displayer.displayPlayerCard(card);
     }
 
-    /* Event listeners */
     getById("#action-deck").click(() => this.start());
     getById("#action-stop").click(() => this.stop());
+    getById("#action-quit").click(() => this.stop());
     getById("#action-restart").click(() => this.restart());
+    getById("#action-replay").click(() => this.restart());
     getById("#action-stand").click(() => this.stand());
     getById("#action-hit").click(() => this.draw());
-    get(".endgame").click(() => Displayer.displayFinalResult());
+    get(".endgame").click(() => get(".bj-final-modal").addClass("active").show());
     get(".bj-final-modal").click(({ target: { classList } }) => {
-        // Destructuring event.target.classList => get user clicked element classlist within the modal
+        // Destructuring event.target.classList
         if (classList.contains("bj-final-modal") || classList.contains("modal-close")) {
-            get(".bj-final-modal").hide();
+            get(".bj-final-modal").removeClass("active").hide();
+            get(".endgame").show();
         }
     });
 
@@ -73,6 +76,7 @@ Game.prototype.start = async function () {
     get(".bj-scoreboard").visible();
     get(".bj-actions").visible();
     get(".deck-container").removeClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
 };
 
 Game.prototype.stop = async function () {
@@ -82,24 +86,32 @@ Game.prototype.stop = async function () {
     console.log("stop");
 
     this.status = Constants.GAME_STATUS_READY;
-    this.player.score = 0;
-    this.player.hand = [];
 
-    getById("#player-hand").html("");
     getById("#action-deck").click(() => this.start());
+    getById("#player-hand").html("");
     getById("#action-stop").hidden();
     getById("#action-restart").hidden();
     get(".bj-scoreboard").hidden();
     get(".bj-actions").hidden();
     get(".deck-container").addClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
+    get(".endgame").hide();
 
-    await this.deck.reshuffle();
+    if (this.player.score !== 0 || this.deck.remaining !== 52) {
+        await this.deck.reshuffle();
+    }
+
+    this.player.score = 0;
+    this.player.hand = [];
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
 };
 
 Game.prototype.restart = function () {
-    if (!this.isRunning() || this.player.isHandEmpty()) {
+    if (
+        (!this.isRunning() && this.status !== Constants.GAME_STATUS_FINISHED) ||
+        this.player.isHandEmpty()
+    ) {
         return;
     }
     console.log("restart");
@@ -118,17 +130,12 @@ Game.prototype.stand = async function () {
 
     Displayer.displayStandScene();
 
-    if (this.player.score < 21) {
-        await this.draw();
+    const nextCard = await this.deck.draw();
+    nextCard.value = Card.getValue(nextCard);
+    nextCard.currentScore = this.player.score;
 
-        if (this.player.score > 21) {
-            console.log("win");
-        } else {
-            console.log("loose");
-        }
-
-        return this.stop();
-    }
+    const hasWon = hasWonAfterStand(this.player, nextCard);
+    Displayer.displayFinalResult(hasWon, nextCard);
 };
 
 Game.prototype.draw = async function () {
@@ -137,21 +144,21 @@ Game.prototype.draw = async function () {
     }
     console.log("draw");
 
-    Displayer.displayDrawScene();
-
     const card = await this.deck.draw();
-
-    console.log("card", card);
-
+    Displayer.displayDrawScene();
     this.player.draw(card);
 
     Displayer.displayPlayerCard(card);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
 
-    if (this.isRunning()) {
-        await this.check();
+    const hasWon = hasWonAfterDraw(this.player);
+    if (hasWon === null) {
+        return;
     }
+
+    this.status = Constants.GAME_STATUS_FINISHED;
+    Displayer.displayFinalResult(hasWon);
 };
 
 Game.prototype.cancelDraw = function () {
@@ -166,20 +173,6 @@ Game.prototype.clear = function () {
     clearSelectorEvents();
 };
 
-Game.prototype.check = async function () {
-    console.log("check");
-
-    if (this.player.score === 21) {
-        console.log("win");
-        return this.stop();
-    }
-
-    if (this.player.score > 21) {
-        console.log("loose");
-        return this.stop();
-    }
-};
-
 const intervalStorage = [];
 
 const setIntervalCustom = (handler, timeout) => {
@@ -192,5 +185,9 @@ const clearAllInterval = () => {
         clearInterval(interval);
     }
 };
+
+const hasWonAfterDraw = ({ score }) => (score === 21 || score > 21 ? score === 21 : null);
+
+const hasWonAfterStand = ({ score }, { value }) => score + value > 21;
 
 export default Game;

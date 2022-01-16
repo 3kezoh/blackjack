@@ -44,20 +44,24 @@ Selector.prototype.on = function (event, callback) {
     this.elements.forEach((el) => {
         EventHandler.bind(el, event, callback);
     });
+
+    return this;
 };
 
 Selector.prototype.off = function (event) {
     this.elements.forEach((el) => {
         EventHandler.unbind(el, event ?? null);
     });
+
+    return this;
 };
 
 Selector.prototype.click = function (callback) {
-    this.on("click", callback);
+    return this.on("click", callback);
 };
 
 Selector.prototype.change = function (callback) {
-    this.on("change", callback);
+    return this.on("change", callback);
 };
 
 Selector.prototype.append = function (html) {
@@ -66,6 +70,8 @@ Selector.prototype.append = function (html) {
     this.elements.forEach((el) => {
         el.innerHTML = el.innerHTML + html;
     });
+
+    return this;
 };
 
 Selector.prototype.prepend = function (html) {
@@ -74,6 +80,8 @@ Selector.prototype.prepend = function (html) {
     this.elements.forEach((el) => {
         el.innerHTML = html + el.innerHTML;
     });
+
+    return this;
 };
 
 Selector.prototype.html = function (html) {
@@ -82,6 +90,8 @@ Selector.prototype.html = function (html) {
     this.elements.forEach((el) => {
         el.innerHTML = html;
     });
+
+    return this;
 };
 
 Selector.prototype.val = function (value) {
@@ -90,6 +100,8 @@ Selector.prototype.val = function (value) {
     this.elements.forEach((el) => {
         el.value = value;
     });
+
+    return this;
 };
 
 Selector.prototype.text = function (text) {
@@ -98,18 +110,24 @@ Selector.prototype.text = function (text) {
     this.elements.forEach((el) => {
         el.textContent = text;
     });
+
+    return this;
 };
 
 Selector.prototype.addClass = function (...classNames) {
     this.elements.forEach((el) => {
         el.classList.add(...classNames);
     });
+
+    return this;
 };
 
 Selector.prototype.removeClass = function (...classNames) {
     this.elements.forEach((el) => {
         el.classList.remove(...classNames);
     });
+
+    return this;
 };
 
 Selector.prototype.hasClass = function (className) {
@@ -123,18 +141,24 @@ Selector.prototype.attr = function (name, value) {
     this.elements.forEach((el) => {
         el.setAttribute(name, value);
     });
+
+    return this;
 };
 
 Selector.prototype.removeAttr = function (name) {
     this.elements.forEach((el) => {
         el.removeAttribute(name);
     });
+
+    return this;
 };
 
 Selector.prototype.hide = function () {
     this.elements.forEach((el) => {
         el.style.display = "none";
     });
+
+    return this;
 };
 
 Selector.prototype.show = function () {
@@ -144,6 +168,8 @@ Selector.prototype.show = function () {
             el.style.display = "block";
         }
     });
+
+    return this;
 };
 
 Selector.prototype.css = function (property, value) {
@@ -153,14 +179,16 @@ Selector.prototype.css = function (property, value) {
     this.elements.forEach((el) => {
         el.style[property] = value;
     });
+
+    return this;
 };
 
 Selector.prototype.hidden = function () {
-    this.addClass("hidden");
+    return this.addClass("hidden");
 };
 
 Selector.prototype.visible = function () {
-    this.removeClass("hidden");
+    return this.removeClass("hidden");
 };
 
 Selector.prototype[Symbol.iterator] = function* () {

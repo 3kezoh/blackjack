@@ -1,5 +1,6 @@
 import Constants from "./constants.js";
 import Game from "./libs/Game/game.js";
+import { get } from "./libs/Selector/selector.js";
 
 let keyboardHandler, pageUnloadHandler;
 
@@ -28,25 +29,40 @@ App.prototype.exit = function () {
 
 App.prototype.setKeyboardHandler = function () {
     keyboardHandler = (e) => {
-        switch (e.code) {
-            case "Space":
-                this.game.start();
-                break;
-            case "Escape":
-                this.game.stop();
-                break;
-            case "KeyS":
-                this.game.stand();
-                break;
-            case "KeyD":
-                this.game.draw();
-                break;
-            case "KeyC":
-                this.game.cancelDraw();
-                break;
-            case "KeyR":
-                this.game.restart();
-                break;
+        if (this.game.status === Constants.GAME_STATUS_RUNNING) {
+            switch (e.code) {
+                case "Backspace":
+                    this.game.stop();
+                    break;
+                case "KeyS":
+                    this.game.stand();
+                    break;
+                case "KeyD":
+                    this.game.draw();
+                    break;
+                case "KeyC":
+                    this.game.cancelDraw();
+                    break;
+                case "KeyR":
+                    this.game.restart();
+                    break;
+            }
+        } else if (this.game.status === Constants.GAME_STATUS_FINISHED) {
+            switch (e.code) {
+                case "KeyR":
+                case "Space":
+                    this.game.restart();
+                    break;
+                case "Backspace":
+                    this.game.stop();
+                    break;
+                case "Escape":
+                    get(".bj-final-modal").removeClass("active").hide();
+                    get(".endgame").show();
+                    break;
+            }
+        } else if (this.game.status === Constants.GAME_STATUS_READY && e.code === "Space") {
+            this.game.start();
         }
     };
 
