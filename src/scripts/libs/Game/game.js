@@ -135,7 +135,7 @@ Game.prototype.stand = async function () {
     nextCard.currentScore = this.player.score;
 
     const hasWon = hasWonAfterStand(this.player, nextCard);
-    Displayer.displayFinalResult(hasWon, nextCard);
+    Displayer.displayEndgame(hasWon, nextCard);
 };
 
 Game.prototype.draw = async function () {
@@ -158,7 +158,7 @@ Game.prototype.draw = async function () {
     }
 
     this.status = Constants.GAME_STATUS_FINISHED;
-    Displayer.displayFinalResult(hasWon);
+    Displayer.displayEndgame(hasWon);
 };
 
 Game.prototype.cancelDraw = function () {

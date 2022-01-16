@@ -1,5 +1,6 @@
+import Constants from "../../constants.js";
 import Card from "../Card/index.js";
-import { get, getById } from "../Selector/selector.js";
+import { get, getAll, getById } from "../Selector/selector.js";
 
 const Displayer = function () {};
 
@@ -12,18 +13,26 @@ Displayer.displayNetworkStatus = () => {
 
 Displayer.displayDrawError = () => {};
 
-Displayer.displayFinalResult = (hasWon, nextCard = null) => {
+Displayer.displayEndgame = (hasWon, nextCard = null) => {
     get(".bj-actions").hidden();
-    getById("action-replay").text(hasWon ? "Play again" : "Try again");
-
-    get(".modal-title").html(getModalTitle(hasWon));
-    if (nextCard) {
-        get(".modal-content").html(getModalContentNextCard(nextCard));
+    if (hasWon) {
+        Displayer.animateWinningCards();
+        getById("action-replay").text("Play again");
+        get(".modal-content").html(
+            nextCard ? getModalContentNextCard(nextCard) : getModalContentAutoWin()
+        );
     } else {
-        get(".modal-content").html(hasWon ? getModalContentAutoWin() : getModalContentAutoLoose());
+        Displayer.animateLoosingCards();
+        getById("action-replay").text("Try again");
+        get(".modal-content").html(
+            nextCard ? getModalContentNextCard(nextCard) : getModalContentAutoLoose()
+        );
     }
+    get(".modal-title").html(getModalTitle(hasWon));
 
-    get(".bj-final-modal").addClass("active").show();
+    setTimeout(() => {
+        get(".bj-final-modal").addClass("active").show();
+    }, Constants.MODAL_DISPLAY_DELAY * 1000);
 };
 
 /**
@@ -48,6 +57,75 @@ Displayer.displayDrawScene = () => {
 
 Displayer.displayStandScene = () => {
     get(".bj-actions").hidden();
+};
+
+Displayer.animateWinningCards = () => {
+    const cards = getAll(".hand-card");
+
+    const keyframes = [
+        { transform: "rotateY(0deg) rotate(0deg)", marginLeft: "-50px" },
+        { transform: "rotateY(180deg) rotate(-25deg)", marginLeft: "-118px" },
+        { transform: "rotateY(0deg) rotate(-25deg)", marginLeft: "-200px" },
+        { transform: "rotateY(-180deg) rotate(-25deg)", marginLeft: "-118px" },
+        { transform: "rotateY(0deg) rotate(0deg)", marginLeft: "-50px" },
+    ];
+
+    const timings = {
+        easing: "linear",
+        duration: 1750,
+        iterations: 2,
+    };
+
+    let delay = 0;
+    const animations = [];
+    for (let card of cards) {
+        timings.delay = delay;
+        delay += 50;
+        animations.push(card.animate(keyframes, timings));
+    }
+
+    const interval = setInterval(() => {
+        // Auto clear interval when there is no more cards (game stopped or restarted)
+        if (getById("player-hand").html() === "") {
+            return clearInterval(interval);
+        }
+        animations.forEach((animation) => {
+            animation.play();
+        });
+    }, Constants.WINNING_CARDS_DELAY * 1000);
+};
+
+Displayer.animateLoosingCards = () => {
+    const cards = getAll(".hand-card");
+
+    const keyframes = [
+        { transform: "translateY(0px)" },
+        { transform: "translateY(-15px)" },
+        { transform: "translateY(0px)" },
+    ];
+    const timings = {
+        easing: "linear",
+        duration: 250,
+        iterations: 5,
+    };
+
+    let delay = 0;
+    const animations = [];
+    for (let card of cards) {
+        timings.delay = delay;
+        delay += 40;
+        animations.push(card.animate(keyframes, timings));
+    }
+
+    const interval = setInterval(() => {
+        // Auto clear interval when there is no more cards (game stopped or restarted)
+        if (getById("player-hand").html() === "") {
+            return clearInterval(interval);
+        }
+        animations.forEach((animation) => {
+            animation.play();
+        });
+    }, Constants.LOOSING_CARDS_DELAY * 1000);
 };
 
 const getModalTitle = (hasWon) =>
