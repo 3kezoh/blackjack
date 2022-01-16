@@ -38,12 +38,7 @@ export default function Card({ value, code, image, suit }) {
  * @returns {Card}
  */
 Card.create = (data) => {
-    const instance = new Card();
-
-    instance.code = data.code;
-    instance.image = data.image;
-    instance.value = data.value;
-    instance.suit = data.suit;
+    const instance = new Card(data);
     instance.isFlipped = data.isFlipped;
 
     return instance;
@@ -54,4 +49,20 @@ Card.create = (data) => {
  */
 Card.prototype.flip = function () {
     this.isFlipped = !this.isFlipped;
+};
+
+/**
+ * Parses card string value to integer
+ * @param {Object} card
+ * @param {string} card.value
+ * @returns {Number}
+ */
+Card.getValue = ({ value }) => {
+    if (value === "ACE") {
+        return 0;
+    }
+    if (["KING", "QUEEN", "JACK"].includes(value)) {
+        return 10;
+    }
+    return Number.parseInt(value);
 };

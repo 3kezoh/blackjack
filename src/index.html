@@ -32,7 +32,13 @@
                                 alt="" />
                         </div>
                     </div>
-                    <span class="col-8"></span>
+                    <span class="col-8 position-relative">
+                        <div id="game-state-info" class="game-state-info">
+                            <div class="endgame">
+                                <span>This round is over. View details</span>
+                            </div>
+                        </div>
+                    </span>
                     <div class="col-4">
                         <div class="toolbar-list-right flex justify-end items-center">
                             <div id="info" class="tooltip">
@@ -94,6 +100,17 @@
                                 </div>
                                 <span id="deck-remaining"></span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bj-final-modal">
+                    <div class="modal-container">
+                        <span class="modal-close">&times;</span>
+                        <div class="modal-title"></div>
+                        <div class="modal-content"></div>
+                        <div class="modal-actions">
+                            <button id="action-replay" class="btn-action">Play again</button>
+                            <button id="action-quit" class="btn-action">Quit</button>
                         </div>
                     </div>
                 </div>
