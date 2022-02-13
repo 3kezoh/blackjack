@@ -37,7 +37,7 @@ DeckService.prototype.shuffle = async function (deck_id) {
 
         return payload;
     } catch (error) {
-        console.error(error);
+        throw error;
     }
 };
 
@@ -71,6 +71,6 @@ DeckService.prototype.draw = async function (deck_id, count) {
 
         return payload;
     } catch (error) {
-        console.error(error);
+        throw error;
     }
 };

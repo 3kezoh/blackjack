@@ -2,16 +2,28 @@ import Constants from "../../constants.js";
 import Card from "../Card/index.js";
 import { get, getAll, getById } from "../Selector/selector.js";
 
+let errorTimeout = null;
+
+/**
+ * @class
+ */
 const Displayer = function () {};
 
 Displayer.displayNetworkStatus = () => {
     const isOnline = window.navigator.onLine;
-    const path = `images/wifi-${isOnline ? "on" : "off"}.svg`;
-    get("#wifi > img.toolbar-icon").attr("src", path);
-    get("#wifi > span.tooltip-content").text(isOnline ? "Online" : "Offline");
+
+    getById(`#wifi-${isOnline ? "on" : "off"}`).show();
+    getById(`#wifi-${isOnline ? "off" : "on"}`).hide();
 };
 
-Displayer.displayDrawError = () => {};
+Displayer.displayErrorMessage = (message) => {
+    clearTimeout(errorTimeout);
+
+    getById("error-message").text(message);
+    get(".error").show();
+
+    errorTimeout = setTimeout(() => get(".error").hide(), 2000);
+};
 
 Displayer.displayEndgame = (hasWon, nextCard = null) => {
     get(".bj-actions").hidden();
@@ -50,13 +62,39 @@ Displayer.updateDeckRemainingCards = (remaining) => {
     get("#deck-remaining").text(remaining);
 };
 
-Displayer.displayDrawScene = () => {
+Displayer.handleDrawStart = () => {
+    getById("#action-hit").attr("disabled", true);
+    getById("#action-stand").attr("disabled", true);
+};
+
+Displayer.handleDrawEnd = () => {
+    getById("#action-hit").removeAttr("disabled");
     getById("#action-restart").visible();
     getById("#action-stand").removeAttr("disabled");
 };
 
-Displayer.displayStandScene = () => {
+Displayer.handleStandEvent = () => {
     get(".bj-actions").hidden();
+};
+
+Displayer.handleStartEvent = () => {
+    getById("#action-stand").attr("disabled", true);
+    getById("#action-stop").visible();
+    get(".bj-scoreboard").visible();
+    get(".bj-actions").visible();
+    get(".deck-container").removeClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
+};
+
+Displayer.handleStopEvent = () => {
+    getById("#player-hand").html("");
+    getById("#action-stop").hidden();
+    getById("#action-restart").hidden();
+    get(".bj-scoreboard").hidden();
+    get(".bj-actions").hidden();
+    get(".deck-container").addClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
+    get(".endgame").hide();
 };
 
 Displayer.animateWinningCards = () => {

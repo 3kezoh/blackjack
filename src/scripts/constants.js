@@ -11,6 +11,9 @@ const Constants = {
     MODAL_DISPLAY_DELAY: 1, // Modal display delay (in seconds)
     WINNING_CARDS_DELAY: 5, // Winning animation interval (in seconds)
     LOOSING_CARDS_DELAY: 3, // Loosing animation interval (in seconds)
+
+    ABORT_KEY_DRAW: "draw",
+    ABORT_KEY_SHUFFLE: "shuffle",
 };
 
 export default Constants;
