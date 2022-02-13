@@ -9,6 +9,7 @@ const Game = function () {
     this.deck = new Deck();
     this.player = new Player();
     this.status = Constants.GAME_STATUS_READY;
+    this.locker = false;
 };
 
 Game.create = (data) => {
@@ -22,7 +23,9 @@ Game.create = (data) => {
 };
 
 Game.prototype.init = async function () {
-    setIntervalCustom(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
+    this.lock();
+    Displayer.displayNetworkStatus();
+    setInterval(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
 
     if (!this.isRunning()) {
         await this.deck.shuffle();
@@ -44,9 +47,11 @@ Game.prototype.init = async function () {
     getById("#action-stand").click(() => this.stand());
     getById("#action-hit").click(() => this.draw());
     get(".endgame").click(() => get(".bj-final-modal").addClass("active").show());
-    get(".bj-final-modal").click(({ target: { classList } }) => {
-        // Destructuring event.target.classList
-        if (classList.contains("bj-final-modal") || classList.contains("modal-close")) {
+    get(".bj-final-modal").click((e) => {
+        if (
+            e.target.classList.contains("bj-final-modal") ||
+            e.target.classList.contains("modal-close")
+        ) {
             get(".bj-final-modal").removeClass("active").hide();
             get(".endgame").show();
         }
@@ -56,46 +61,31 @@ Game.prototype.init = async function () {
         this.status = Constants.GAME_STATUS_READY;
         this.start();
     }
+    this.unlock();
 };
 
-Game.prototype.isRunning = function () {
-    return this.status === Constants.GAME_STATUS_RUNNING;
-};
-
-Game.prototype.start = async function () {
+Game.prototype.start = function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
         return;
     }
 
     console.log("start");
-    this.status = Constants.GAME_STATUS_RUNNING;
 
     getById("#action-deck").click(() => this.draw());
-    getById("#action-stand").attr("disabled", true);
-    getById("#action-stop").visible();
-    get(".bj-scoreboard").visible();
-    get(".bj-actions").visible();
-    get(".deck-container").removeClass("initial-center");
-    get(".bj-final-modal").removeClass("active").hide();
+    Displayer.handleStartEvent();
+    this.status = Constants.GAME_STATUS_RUNNING;
 };
 
 Game.prototype.stop = async function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return;
     }
+    this.lock();
     console.log("stop");
 
-    this.status = Constants.GAME_STATUS_READY;
-
     getById("#action-deck").click(() => this.start());
-    getById("#player-hand").html("");
-    getById("#action-stop").hidden();
-    getById("#action-restart").hidden();
-    get(".bj-scoreboard").hidden();
-    get(".bj-actions").hidden();
-    get(".deck-container").addClass("initial-center");
-    get(".bj-final-modal").removeClass("active").hide();
-    get(".endgame").hide();
+    Displayer.handleStopEvent();
+    this.status = Constants.GAME_STATUS_READY;
 
     if (this.player.score !== 0 || this.deck.remaining !== 52) {
         await this.deck.reshuffle();
@@ -105,6 +95,7 @@ Game.prototype.stop = async function () {
     this.player.hand = [];
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
+    this.unlock();
 };
 
 Game.prototype.restart = function () {
@@ -120,15 +111,15 @@ Game.prototype.restart = function () {
 };
 
 Game.prototype.stand = async function () {
-    if (!this.isRunning() || this.player.isHandEmpty()) {
+    if (this.isLocked() || !this.isRunning() || this.player.isHandEmpty()) {
         return;
     }
 
+    this.lock();
     console.log("stand");
+    Displayer.handleStandEvent();
 
     this.status = Constants.GAME_STATUS_FINISHED;
-
-    Displayer.displayStandScene();
 
     const nextCard = await this.deck.draw();
     nextCard.value = Card.getValue(nextCard);
@@ -136,57 +127,64 @@ Game.prototype.stand = async function () {
 
     const hasWon = hasWonAfterStand(this.player, nextCard);
     Displayer.displayEndgame(hasWon, nextCard);
+
+    this.unlock();
 };
 
 Game.prototype.draw = async function () {
-    if (!this.isRunning()) {
+    if (this.isLocked() || !this.isRunning()) {
         return;
     }
+
+    this.lock();
     console.log("draw");
+    Displayer.handleDrawStart();
 
     const card = await this.deck.draw();
-    Displayer.displayDrawScene();
     this.player.draw(card);
-
     Displayer.displayPlayerCard(card);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
     Displayer.updatePlayerScore(this.player.score);
 
     const hasWon = hasWonAfterDraw(this.player);
-    if (hasWon === null) {
-        return;
+    if (hasWon !== null) {
+        this.status = Constants.GAME_STATUS_FINISHED;
+        Displayer.displayEndgame(hasWon);
     }
 
-    this.status = Constants.GAME_STATUS_FINISHED;
-    Displayer.displayEndgame(hasWon);
+    Displayer.handleDrawEnd();
+    this.unlock();
 };
 
 Game.prototype.cancelDraw = function () {
-    if (!this.isRunning()) {
-        return false;
+    if (!this.isLocked() || !this.isRunning()) {
+        return;
     }
+
     console.log("cancel draw");
 };
 
 Game.prototype.clear = function () {
-    clearAllInterval();
     clearSelectorEvents();
 };
 
-const intervalStorage = [];
-
-const setIntervalCustom = (handler, timeout) => {
-    intervalStorage.push(setInterval(handler, timeout));
-    handler();
+Game.prototype.isRunning = function () {
+    return this.status === Constants.GAME_STATUS_RUNNING;
 };
 
-const clearAllInterval = () => {
-    for (const interval of intervalStorage) {
-        clearInterval(interval);
-    }
+Game.prototype.isLocked = function () {
+    return this.locker;
 };
 
-const hasWonAfterDraw = ({ score }) => (score === 21 || score > 21 ? score === 21 : null);
+Game.prototype.lock = function () {
+    this.locker = true;
+};
+
+Game.prototype.unlock = function () {
+    this.locker = false;
+};
+
+const hasWonAfterDraw = ({ score }) => (score >= 21 ? score === 21 : null);
 
 const hasWonAfterStand = ({ score }, { value }) => score + value > 21;
 

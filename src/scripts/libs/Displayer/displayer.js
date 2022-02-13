@@ -50,13 +50,38 @@ Displayer.updateDeckRemainingCards = (remaining) => {
     get("#deck-remaining").text(remaining);
 };
 
-Displayer.displayDrawScene = () => {
+Displayer.handleDrawStart = () => {
+    getById("#action-hit").attr("disabled", true);
+};
+
+Displayer.handleDrawEnd = () => {
+    getById("#action-hit").removeAttr("disabled");
     getById("#action-restart").visible();
     getById("#action-stand").removeAttr("disabled");
 };
 
-Displayer.displayStandScene = () => {
+Displayer.handleStandEvent = () => {
     get(".bj-actions").hidden();
+};
+
+Displayer.handleStartEvent = () => {
+    getById("#action-stand").attr("disabled", true);
+    getById("#action-stop").visible();
+    get(".bj-scoreboard").visible();
+    get(".bj-actions").visible();
+    get(".deck-container").removeClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
+};
+
+Displayer.handleStopEvent = () => {
+    getById("#player-hand").html("");
+    getById("#action-stop").hidden();
+    getById("#action-restart").hidden();
+    get(".bj-scoreboard").hidden();
+    get(".bj-actions").hidden();
+    get(".deck-container").addClass("initial-center");
+    get(".bj-final-modal").removeClass("active").hide();
+    get(".endgame").hide();
 };
 
 Displayer.animateWinningCards = () => {
