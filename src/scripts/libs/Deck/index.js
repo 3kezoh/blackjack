@@ -31,30 +31,48 @@ Deck.create = (data) => {
  * Shuffles the deck.
  */
 Deck.prototype.shuffle = async function () {
-    const { deck_id, remaining } = await this.deckService.shuffle();
-    this.deck_id = deck_id;
-    this.remaining = remaining;
+    try {
+        const { deck_id, remaining } = await this.deckService.shuffle();
+        this.deck_id = deck_id;
+        this.remaining = remaining;
+    } catch (error) {
+        throw error;
+    }
 };
 
 /**
  * Reshuffles the deck with new cards.
  */
 Deck.prototype.reshuffle = async function () {
-    if (this.deck_id) {
+    try {
         const { remaining } = await this.deckService.shuffle(this.deck_id);
         this.remaining = remaining;
+    } catch (error) {
+        throw error;
     }
 };
 
 /**
  * Draws a card from the deck.
+ * @param {number} count
  * @returns {Promise<Card>}
  */
-Deck.prototype.draw = async function () {
-    const { cards, remaining } = await this.deckService.draw(this.deck_id, 1);
-    const [card] = cards;
-    this.remaining = remaining;
-    return new Card(card);
+Deck.prototype.draw = async function (count = 1) {
+    try {
+        const { cards, remaining } = await this.deckService.draw(this.deck_id, count);
+        const [card] = cards;
+        this.remaining = remaining;
+        return new Card(card);
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * Checks wether the deck is set or not
+ */
+Deck.prototype.isAlreadySet = function () {
+    return this.deck_id !== null;
 };
 
 Deck.prototype[Symbol.asyncIterator] = async function* () {

@@ -22,14 +22,10 @@ Game.create = (data) => {
     return instance;
 };
 
-Game.prototype.init = async function () {
+Game.prototype.init = function () {
     this.lock();
     Displayer.displayNetworkStatus();
     setInterval(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
-
-    if (!this.isRunning()) {
-        await this.deck.shuffle();
-    }
 
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
@@ -64,38 +60,49 @@ Game.prototype.init = async function () {
     this.unlock();
 };
 
-Game.prototype.start = function () {
+Game.prototype.start = async function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
         return;
     }
-
+    this.lock();
     console.log("start");
+    try {
+        if (!isOnline()) {
+            throw new Error("Please check your network status");
+        }
+        if (!this.deck.isAlreadySet()) {
+            await this.deck.shuffle();
+        } else if (
+            this.deck.isAlreadySet() &&
+            (this.player.score !== 0 || this.deck.remaining !== 52)
+        ) {
+            await this.deck.reshuffle();
+        }
 
-    getById("#action-deck").click(() => this.draw());
-    Displayer.handleStartEvent();
-    this.status = Constants.GAME_STATUS_RUNNING;
+        getById("#action-deck").click(() => this.draw());
+        Displayer.handleStartEvent();
+        this.status = Constants.GAME_STATUS_RUNNING;
+    } catch (error) {
+        Displayer.displayErrorMessage(error.message);
+    } finally {
+        this.unlock();
+    }
 };
 
-Game.prototype.stop = async function () {
+Game.prototype.stop = function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return;
     }
-    this.lock();
     console.log("stop");
 
     getById("#action-deck").click(() => this.start());
     Displayer.handleStopEvent();
     this.status = Constants.GAME_STATUS_READY;
 
-    if (this.player.score !== 0 || this.deck.remaining !== 52) {
-        await this.deck.reshuffle();
-    }
-
     this.player.score = 0;
     this.player.hand = [];
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
-    this.unlock();
 };
 
 Game.prototype.restart = function () {
@@ -117,18 +124,25 @@ Game.prototype.stand = async function () {
 
     this.lock();
     console.log("stand");
-    Displayer.handleStandEvent();
 
-    this.status = Constants.GAME_STATUS_FINISHED;
+    try {
+        if (!isOnline()) {
+            throw new Error("Please check your network status");
+        }
 
-    const nextCard = await this.deck.draw();
-    nextCard.value = Card.getValue(nextCard);
-    nextCard.currentScore = this.player.score;
+        const nextCard = await this.deck.draw();
+        nextCard.value = Card.getValue(nextCard);
+        nextCard.currentScore = this.player.score;
 
-    const hasWon = hasWonAfterStand(this.player, nextCard);
-    Displayer.displayEndgame(hasWon, nextCard);
-
-    this.unlock();
+        const hasWon = hasWonAfterStand(this.player, nextCard);
+        Displayer.displayEndgame(hasWon, nextCard);
+        Displayer.handleStandEvent();
+        this.status = Constants.GAME_STATUS_FINISHED;
+    } catch (error) {
+        Displayer.displayErrorMessage(error.message);
+    } finally {
+        this.unlock();
+    }
 };
 
 Game.prototype.draw = async function () {
@@ -138,22 +152,28 @@ Game.prototype.draw = async function () {
 
     this.lock();
     console.log("draw");
-    Displayer.handleDrawStart();
+    try {
+        if (!isOnline()) {
+            throw new Error("Please check your network status");
+        }
+        Displayer.handleDrawStart();
+        const card = await this.deck.draw();
+        this.player.draw(card);
+        Displayer.displayPlayerCard(card);
+        Displayer.updateDeckRemainingCards(this.deck.remaining);
+        Displayer.updatePlayerScore(this.player.score);
 
-    const card = await this.deck.draw();
-    this.player.draw(card);
-    Displayer.displayPlayerCard(card);
-    Displayer.updateDeckRemainingCards(this.deck.remaining);
-    Displayer.updatePlayerScore(this.player.score);
-
-    const hasWon = hasWonAfterDraw(this.player);
-    if (hasWon !== null) {
-        this.status = Constants.GAME_STATUS_FINISHED;
-        Displayer.displayEndgame(hasWon);
+        const hasWon = hasWonAfterDraw(this.player);
+        if (hasWon !== null) {
+            this.status = Constants.GAME_STATUS_FINISHED;
+            Displayer.displayEndgame(hasWon);
+        }
+    } catch (error) {
+        Displayer.displayErrorMessage(error.message);
+    } finally {
+        Displayer.handleDrawEnd();
+        this.unlock();
     }
-
-    Displayer.handleDrawEnd();
-    this.unlock();
 };
 
 Game.prototype.cancelDraw = function () {
@@ -187,5 +207,7 @@ Game.prototype.unlock = function () {
 const hasWonAfterDraw = ({ score }) => (score >= 21 ? score === 21 : null);
 
 const hasWonAfterStand = ({ score }, { value }) => score + value > 21;
+
+const isOnline = () => window.navigator.onLine;
 
 export default Game;
