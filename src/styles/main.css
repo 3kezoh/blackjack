@@ -9,8 +9,11 @@ main {
     display: flex;
     flex-direction: column;
     width: 75%;
-    max-width: 900px;
     height: 600px;
+    max-width: 900px;
+    max-height: 600px;
+    min-width: 250px;
+    min-height: 450px;
     margin: 2rem auto;
     border-radius: 0.5em;
     background: linear-gradient(160deg, #1a4a1c, #308834 600px);
@@ -20,6 +23,11 @@ main {
 .bj-toolbar {
     flex: 0.1;
     width: 100%;
+    position: relative;
+}
+
+.bj-toolbar .bj-toolbar-middle {
+    position: relative;
 }
 
 .bj-toolbar .game-state-info {
@@ -34,6 +42,7 @@ main {
 .game-state-info .endgame {
     display: none;
     width: fit-content;
+    max-width: 90%;
     border: 1px solid #ffd55c;
     border-radius: 0.5em;
     padding: 0.5em 2.5em;
@@ -50,6 +59,7 @@ main {
     display: none;
     position: relative;
     width: fit-content;
+    max-width: 90%;
     background-color: #ec3434;
     border-radius: 0.5em;
     padding: 0.5em 2.5em;
@@ -137,6 +147,10 @@ main {
     border-radius: 6px;
 }
 
+.hand-container .hand .hand-card:first-of-type {
+    margin-left: 0;
+}
+
 .hand-card:last-of-type {
     animation: draw-card 0.8s linear;
 }
@@ -162,6 +176,11 @@ main {
 .bj-scoreboard {
     flex: 0.1;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0.5em 0.875em;
 }
 
 .btn-action {
@@ -172,7 +191,7 @@ main {
     font-size: 1.2rem;
     color: #fff;
     text-transform: uppercase;
-    padding: 0.7rem 2rem;
+    padding: 0.7em 2em;
     margin: 0 1em;
     transition: transform 0.1s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
 }
@@ -304,6 +323,10 @@ main {
     align-items: center;
 }
 
+.modal-actions .btn-action {
+    font-size: 1rem;
+}
+
 @keyframes pop-modal {
     from {
         top: 0;
@@ -348,5 +371,68 @@ main {
         right: 0;
         transform: rotate(0deg);
         bottom: 0;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    body {
+        font-size: 0.875rem;
+    }
+
+    .bj-game-container {
+        width: 95%;
+        height: 95vh;
+    }
+
+    .bj-toolbar .game-state-info {
+        left: 0;
+        width: 100%;
+    }
+
+    .bj-toolbar .bj-toolbar-middle {
+        position: static;
+    }
+
+    .main-board {
+        flex-direction: column;
+    }
+
+    .main-board .hand-container {
+        flex: 0.65;
+    }
+
+    .main-board .deck-container {
+        flex: 0.35;
+    }
+
+    .main-board .deck-container.initial-center {
+        margin-left: 0;
+    }
+
+    .deck > img {
+        height: 125px;
+    }
+
+    .hand-container .hand .hand-card {
+        height: 135px;
+    }
+
+    .btn-action,
+    .modal-actions .btn-action {
+        font-size: 1em;
+    }
+
+    .bj-scoreboard {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-container {
+        width: 100%;
+    }
+
+    .bj-final-modal .modal-title > h1 {
+        font-size: 1.5em;
     }
 }

@@ -6,7 +6,7 @@ let keyboardHandler, pageUnloadHandler;
 
 const App = function () {
     this.game = null;
-    this.autoSaveBeforeExit = false;
+    this.autoSaveBeforeExit = true;
     this.init();
 };
 

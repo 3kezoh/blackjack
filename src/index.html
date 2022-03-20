@@ -32,7 +32,7 @@
                                 alt="" />
                         </div>
                     </div>
-                    <span class="col-8 position-relative">
+                    <span class="col-8 bj-toolbar-middle">
                         <div id="game-state-info" class="game-state-info">
                             <div class="endgame">
                                 <span>This round is over. View details</span>
@@ -47,10 +47,7 @@
                             <div id="info" class="tooltip">
                                 <img class="toolbar-icon" src="images/info.svg" alt="" />
                                 <span class="tooltip-content"
-                                    >Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                                    Cupiditate voluptas explicabo cum sequi asperiores ratione
-                                    ipsam, non temporibus, dolore autem necessitatibus nam quidem
-                                    harum labore? Maiores nemo esse dolorem et!</span
+                                    >Get as close as possible to 21 !</span
                                 >
                             </div>
                             <div id="wifi-on" class="tooltip">
@@ -87,27 +84,19 @@
                     </div>
                 </div>
                 <div class="bj-scoreboard hidden">
-                    <div class="col-2">
-                        <div class="flex-col justify-start">
-                            <div class="figure-container">
-                                <div class="tooltip">
-                                    <img class="figure-icon" src="images/hand.svg" alt="" />
-                                    <span class="tooltip-content"
-                                        >Lorem ipsum dolor dolorem et!</span
-                                    >
-                                </div>
-                                <span id="player-score"></span>
-                            </div>
-                            <div class="figure-container">
-                                <div class="tooltip">
-                                    <img class="figure-icon" src="images/stack.svg" alt="" />
-                                    <span class="tooltip-content"
-                                        >Lorem ipsum dolor dolorem et!</span
-                                    >
-                                </div>
-                                <span id="deck-remaining"></span>
-                            </div>
+                    <div class="figure-container">
+                        <div class="tooltip">
+                            <img class="figure-icon" src="images/hand.svg" alt="" />
+                            <span class="tooltip-content">Cards count in the player hand</span>
                         </div>
+                        <span id="player-score"></span>
+                    </div>
+                    <div class="figure-container">
+                        <div class="tooltip">
+                            <img class="figure-icon" src="images/stack.svg" alt="" />
+                            <span class="tooltip-content">Remaining cards in the deck</span>
+                        </div>
+                        <span id="deck-remaining"></span>
                     </div>
                 </div>
                 <div class="bj-final-modal">
