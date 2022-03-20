@@ -146,7 +146,7 @@ Game.prototype.stand = async function () {
 };
 
 Game.prototype.draw = async function () {
-    if (this.isLocked() || !this.isRunning()) {
+    if (this.isLocked() || !this.isRunning() || this.deck.isEmpty()) {
         return;
     }
 
@@ -172,6 +172,9 @@ Game.prototype.draw = async function () {
         Displayer.displayErrorMessage(error.message);
     } finally {
         Displayer.handleDrawEnd();
+        if (this.deck.isEmpty()) {
+            getById("#action-hit").attr("disabled", true);
+        }
         this.unlock();
     }
 };

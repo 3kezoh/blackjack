@@ -11,7 +11,7 @@ export default function Deck() {
     /**
      * @type {number}
      */
-    this.remaining = 0;
+    this.remaining = 52;
 }
 
 /**
@@ -73,6 +73,13 @@ Deck.prototype.draw = async function (count = 1) {
  */
 Deck.prototype.isAlreadySet = function () {
     return this.deck_id !== null;
+};
+
+/**
+ * Checks wether the deck is set or not
+ */
+Deck.prototype.isEmpty = function () {
+    return this.remaining === 0;
 };
 
 Deck.prototype[Symbol.asyncIterator] = async function* () {
