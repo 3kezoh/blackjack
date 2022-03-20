@@ -18,6 +18,7 @@ Game.create = (data) => {
     instance.deck = Deck.create(data.deck);
     instance.player = Player.create(data.player);
     instance.status = data.status;
+    instance.locker = data.locker;
 
     return instance;
 };
@@ -29,11 +30,6 @@ Game.prototype.init = function () {
 
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
-
-    /* Display player cards when the game is resumed */
-    for (const card of this.player) {
-        Displayer.displayPlayerCard(card);
-    }
 
     getById("#action-deck").click(() => this.start());
     getById("#action-stop").click(() => this.stop());
@@ -53,10 +49,10 @@ Game.prototype.init = function () {
         }
     });
 
-    if (this.isRunning()) {
-        this.status = Constants.GAME_STATUS_READY;
-        this.start();
+    if (this.status !== Constants.GAME_STATUS_READY) {
+        this.resume();
     }
+
     this.unlock();
 };
 
@@ -130,7 +126,7 @@ Game.prototype.stand = async function () {
             throw new Error("Please check your network status");
         }
 
-        const nextCard = await this.deck.draw();
+        const nextCard = await this.deck.pop();
         nextCard.value = Card.getValue(nextCard);
         nextCard.currentScore = this.player.score;
 
@@ -185,6 +181,41 @@ Game.prototype.cancelDraw = function () {
     }
 
     console.log("cancel draw");
+};
+
+Game.prototype.resume = function () {
+    get(".deck-container").removeClass("initial-center");
+    get(".bj-scoreboard").visible();
+    getById("#action-restart").visible();
+    getById("#action-stop").visible();
+    get(".bj-final-modal").removeClass("active").hide();
+
+    if (this.status === Constants.GAME_STATUS_RUNNING) {
+        getById("#action-deck").click(() => this.draw());
+        getById("#action-hit").removeAttr("disabled");
+        getById("#action-stand").removeAttr("disabled");
+        get(".bj-actions").visible();
+    } else if (this.status === Constants.GAME_STATUS_FINISHED) {
+        get(".endgame").show();
+        get(".bj-actions").hidden();
+
+        if (this.deck.poppedCard) {
+            this.deck.poppedCard.value = Card.getValue(this.deck.poppedCard);
+            this.deck.poppedCard.currentScore = this.player.score;
+
+            Displayer.displayEndgame(
+                hasWonAfterStand(this.player, this.deck.poppedCard),
+                this.deck.poppedCard
+            );
+        } else {
+            Displayer.displayEndgame(hasWonAfterDraw(this.player));
+        }
+    }
+
+    get("#player-hand").html("");
+    for (const card of this.player) {
+        Displayer.displayPlayerCard(card);
+    }
 };
 
 Game.prototype.clear = function () {
