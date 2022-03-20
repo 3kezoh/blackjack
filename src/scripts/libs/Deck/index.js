@@ -11,7 +11,12 @@ export default function Deck() {
     /**
      * @type {number}
      */
-    this.remaining = 0;
+    this.remaining = 52;
+
+    /**
+     * @type {Card}
+     */
+    this.poppedCard = null;
 }
 
 /**
@@ -23,6 +28,7 @@ Deck.create = (data) => {
 
     instance.deck_id = data.deck_id;
     instance.remaining = data.remaining;
+    instance.poppedCard = data.poppedCard ? new Card(data.poppedCard) : null;
 
     return instance;
 };
@@ -35,6 +41,7 @@ Deck.prototype.shuffle = async function () {
         const { deck_id, remaining } = await this.deckService.shuffle();
         this.deck_id = deck_id;
         this.remaining = remaining;
+        this.poppedCard = null;
     } catch (error) {
         throw error;
     }
@@ -47,6 +54,7 @@ Deck.prototype.reshuffle = async function () {
     try {
         const { remaining } = await this.deckService.shuffle(this.deck_id);
         this.remaining = remaining;
+        this.poppedCard = null;
     } catch (error) {
         throw error;
     }
@@ -69,10 +77,32 @@ Deck.prototype.draw = async function (count = 1) {
 };
 
 /**
+ * Get the top card of the deck.
+ *
+ * @returns {Promise<Card>}
+ */
+Deck.prototype.pop = async function () {
+    try {
+        this.poppedCard = await this.draw(1);
+        this.remaining++;
+        return this.poppedCard;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
  * Checks wether the deck is set or not
  */
 Deck.prototype.isAlreadySet = function () {
     return this.deck_id !== null;
+};
+
+/**
+ * Checks wether the deck is set or not
+ */
+Deck.prototype.isEmpty = function () {
+    return this.remaining === 0;
 };
 
 Deck.prototype[Symbol.asyncIterator] = async function* () {

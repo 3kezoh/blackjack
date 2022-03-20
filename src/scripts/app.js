@@ -6,7 +6,7 @@ let keyboardHandler, pageUnloadHandler;
 
 const App = function () {
     this.game = null;
-    this.autoSaveBeforeExit = false;
+    this.autoSaveBeforeExit = true;
     this.init();
 };
 
@@ -73,7 +73,9 @@ App.prototype.setPageUnloadHandler = function () {
     pageUnloadHandler = (e) => {
         e.preventDefault();
         clearStorage();
-        this.autoSaveBeforeExit && this.game && saveCurrentState(this.game);
+        if (this.autoSaveBeforeExit && this.game && !this.game.player.isHandEmpty()) {
+            saveCurrentState(this.game);
+        }
         this.exit();
     };
 

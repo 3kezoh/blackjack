@@ -21,19 +21,21 @@ Displayer.displayErrorMessage = (message) => {
 
     getById("error-message").text(message);
     get(".error").show();
-
+    navigator.vibrate(500);
     errorTimeout = setTimeout(() => get(".error").hide(), 2000);
 };
 
 Displayer.displayEndgame = (hasWon, nextCard = null) => {
     get(".bj-actions").hidden();
     if (hasWon) {
+        navigator.vibrate([100, 100, 250]);
         Displayer.animateWinningCards();
         getById("action-replay").text("Play again");
         get(".modal-content").html(
             nextCard ? getModalContentNextCard(nextCard) : getModalContentAutoWin()
         );
     } else {
+        navigator.vibrate([250, 500]);
         Displayer.animateLoosingCards();
         getById("action-replay").text("Try again");
         get(".modal-content").html(
@@ -63,6 +65,7 @@ Displayer.updateDeckRemainingCards = (remaining) => {
 };
 
 Displayer.handleDrawStart = () => {
+    navigator.vibrate(250);
     getById("#action-hit").attr("disabled", true);
     getById("#action-stand").attr("disabled", true);
 };
