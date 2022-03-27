@@ -99,7 +99,7 @@ Deck.prototype.isAlreadySet = function () {
 };
 
 /**
- * Checks wether the deck is set or not
+ * Checks if the deck is empty
  */
 Deck.prototype.isEmpty = function () {
     return this.remaining === 0;

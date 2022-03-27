@@ -10,10 +10,10 @@ let errorTimeout = null;
 const Displayer = function () {};
 
 Displayer.displayNetworkStatus = () => {
-    const isOnline = window.navigator.onLine;
+    const { onLine } = window.navigator;
 
-    getById(`#wifi-${isOnline ? "on" : "off"}`).show();
-    getById(`#wifi-${isOnline ? "off" : "on"}`).hide();
+    getById(`#wifi-${onLine ? "on" : "off"}`).show();
+    getById(`#wifi-${onLine ? "off" : "on"}`).hide();
 };
 
 Displayer.displayErrorMessage = (message) => {
@@ -50,10 +50,124 @@ Displayer.displayEndgame = (hasWon, nextCard = null) => {
 };
 
 /**
- * @param {Card} card
+ * @param {number} remaining
  */
-Displayer.displayPlayerCard = ({ image }) => {
-    get("#player-hand").append(`<img class="hand-card" alt="" src="${image}"/>`);
+Displayer.displayDeck = (remaining) => {
+    const { elements } = getById("deck");
+    const [deckElement] = elements;
+
+    const documentFragment = document.createDocumentFragment();
+
+    for (let i = 0; i < remaining; i++) {
+        const cardElement = document.createElement("li");
+
+        cardElement.dataset.x = -i / 3;
+        cardElement.dataset.y = -i / 4;
+
+        cardElement.classList.add("card");
+        cardElement.style.zIndex = i;
+        cardElement.style.transform = `translate(${cardElement.dataset.x}px, ${cardElement.dataset.y}px)`;
+
+        documentFragment.appendChild(cardElement);
+    }
+
+    deckElement.appendChild(documentFragment);
+};
+
+/**
+ * Shuffles the deck
+ * Can be slow
+ * @return {Promise<Promise<Animation>[]>}
+ */
+Displayer.shuffleDeck = async function () {
+    const { elements: cardElements } = getAll(".card");
+
+    const promises = cardElements.map(async (cardElement, i) => {
+        const x = parseFloat(cardElement.dataset.x);
+        const y = parseFloat(cardElement.dataset.y);
+
+        let offsetX = cardElement.clientWidth / 2 + (cardElement.clientWidth / 2) * Math.random();
+        let offsetY = -i * (1 / 8);
+
+        if (Math.random() < 0.5) {
+            offsetX = -offsetX;
+        }
+
+        const shuffleDeckKeyframes = {
+            transform: [
+                `translate(${x}px, ${y}px)`,
+                `translate(${x + offsetX}px, ${y + offsetY}px)`,
+                `translate(${x}px, ${y}px)`,
+                `translate(${x}px, ${y}px)`,
+                `translate(${x - offsetX}px, ${y + offsetY}px)`,
+                `translate(${x}px, ${y}px)`,
+            ],
+        };
+
+        const shuffleDeckAnimation = cardElement.animate(shuffleDeckKeyframes, {
+            duration: 900,
+            delay: i * 3,
+            ease: "ease-in-out",
+        });
+
+        return shuffleDeckAnimation.finished;
+    });
+
+    return Promise.all(promises);
+};
+
+/**
+ * Draw a card from the deck and show it
+ * TODO refactor
+ * @param {Card} card
+ * @return {Promise<Animation>}
+ */
+Displayer.drawCard = async function (card) {
+    const deckElement = document.getElementById("deck");
+
+    const lastCardElement = deckElement.lastElementChild;
+
+    const x = parseFloat(lastCardElement.dataset.x);
+    const y = parseFloat(lastCardElement.dataset.y);
+
+    const drawCardKeyframes = {
+        transform: [`translate(${x}px, ${y}px)`, `translate(${x}px, ${y + 118.75 / 2}px)`],
+        opacity: [1, 0],
+    };
+
+    const drawCardAnimation = lastCardElement.animate(drawCardKeyframes, 300);
+
+    await drawCardAnimation.finished;
+
+    deckElement.removeChild(deckElement.lastChild);
+
+    return this.displayPlayerCard(card);
+};
+
+/**
+ * Display a card in the player's hand
+ * @param {Card} card
+ * @return {Promise<Animation>}
+ */
+Displayer.displayPlayerCard = async function ({ image }) {
+    const handElement = document.getElementById("hand");
+
+    const cardImage = new Image();
+
+    cardImage.src = image;
+    cardImage.alt = `${image.slice(-6, -4)} Card`;
+    cardImage.classList.add("card");
+
+    handElement.appendChild(cardImage);
+
+    const addCardToHandKeyframes = {
+        transform: [`translateY(${cardImage.clientHeight / 2}px)`, "translateY(0)"],
+        opacity: [0, 1],
+    };
+
+    const addCardToHandAnimation = cardImage.animate(addCardToHandKeyframes, 300);
+
+    return addCardToHandAnimation.finished;
 };
 
 Displayer.updatePlayerScore = (score) => {
@@ -85,23 +199,23 @@ Displayer.handleStartEvent = () => {
     getById("#action-stop").visible();
     get(".bj-scoreboard").visible();
     get(".bj-actions").visible();
-    get(".deck-container").removeClass("initial-center");
+    get(".main-board").removeClass("init");
     get(".bj-final-modal").removeClass("active").hide();
 };
 
 Displayer.handleStopEvent = () => {
-    getById("#player-hand").html("");
+    getById("hand").html("");
     getById("#action-stop").hidden();
     getById("#action-restart").hidden();
     get(".bj-scoreboard").hidden();
     get(".bj-actions").hidden();
-    get(".deck-container").addClass("initial-center");
+    get(".main-board").addClass("init");
     get(".bj-final-modal").removeClass("active").hide();
     get(".endgame").hide();
 };
 
 Displayer.animateWinningCards = () => {
-    const cards = getAll(".hand-card");
+    const cards = getAll("#hand .card");
 
     const keyframes = [
         { transform: "rotateY(0deg) rotate(0deg)", marginLeft: "-50px" },
@@ -127,7 +241,7 @@ Displayer.animateWinningCards = () => {
 
     const interval = setInterval(() => {
         // Auto clear interval when there is no more cards (game stopped or restarted)
-        if (getById("player-hand").html() === "") {
+        if (getById("hand").html() === "") {
             return clearInterval(interval);
         }
         animations.forEach((animation) => {
@@ -137,7 +251,7 @@ Displayer.animateWinningCards = () => {
 };
 
 Displayer.animateLoosingCards = () => {
-    const cards = getAll(".hand-card");
+    const cards = getAll("#hand .card");
 
     const keyframes = [
         { transform: "translateY(0px)" },
@@ -160,7 +274,7 @@ Displayer.animateLoosingCards = () => {
 
     const interval = setInterval(() => {
         // Auto clear interval when there is no more cards (game stopped or restarted)
-        if (getById("player-hand").html() === "") {
+        if (getById("hand").html() === "") {
             return clearInterval(interval);
         }
         animations.forEach((animation) => {

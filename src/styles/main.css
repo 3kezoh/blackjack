@@ -84,48 +84,68 @@ main {
 }
 
 .bj-board {
-    flex: 1;
     position: relative;
-    width: 100%;
-}
-
-.bj-board .main-board {
-    display: flex;
-    justify-content: center;
-    width: 100%;
     height: 100%;
 }
 
-.main-board .deck-container {
-    flex: 0.45;
+.deck-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 1s;
 }
 
-.main-board .deck-container.initial-center {
-    margin-left: 36%;
+.main-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100%;
+    transform: 2s;
 }
 
-.main-board .deck-container .deck {
-    width: fit-content;
+.init {
+    grid-template-columns: 1fr 0;
 }
 
-.deck > img {
+#deck {
     cursor: pointer;
-    transition: transform 0.2s ease-out;
+    list-style: none;
+    transform: translate(calc(-118.75px / 2), calc(-165px / 2));
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.deck > img:hover {
-    transform: translateY(-2px);
+#deck:hover {
+    transform: translate(calc((-118.75px) / 2), calc((-165px - 10px) / 2));
+}
+
+.card {
+    width: 118.75px;
+    height: 165px;
+    border-radius: 3px;
+    box-shadow: 1px 2px 3px #0000000d;
+}
+
+#deck .card {
+    background-color: red;
+    border: 1px solid white;
+    position: absolute;
+}
+
+#hand {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(118.75px / 4);
+    width: 100%;
+    justify-content: center;
+    justify-items: center;
+}
+
+#hand .card:hover {
+    transform: translateY(-5px);
+    z-index: 1;
 }
 
 .main-board .hand-container {
-    flex: 0.55;
     display: flex;
     align-items: center;
-    position: relative;
 }
 
 .main-board .hand-container .hand {
@@ -135,30 +155,6 @@ main {
     width: 100%;
     height: auto;
     padding: 0 2em;
-}
-
-.hand-container .hand .hand-card {
-    position: relative;
-    width: auto;
-    height: 165px;
-    margin-left: -50px;
-    transition: transform 0.05s ease-in;
-    box-shadow: 2px 2px 6px 0px #555;
-    border-radius: 6px;
-}
-
-.hand-container .hand .hand-card:first-of-type {
-    margin-left: 0;
-}
-
-.hand-card:last-of-type {
-    animation: draw-card 0.8s linear;
-}
-
-.hand-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 2px 2px 8px 3px #333;
-    z-index: 1;
 }
 
 .bj-board .bj-actions {
