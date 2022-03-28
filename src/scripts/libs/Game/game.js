@@ -3,7 +3,7 @@ import Player from "../Player/index.js";
 import Constants from "../../constants.js";
 import Displayer from "../Displayer/displayer.js";
 import Card from "../Card/index.js";
-import { clearSelectorEvents, get, getById } from "../Selector/selector.js";
+import { clearSelectorEvents, get, getAll, getById } from "../Selector/selector.js";
 
 const Game = function () {
     this.deck = new Deck();
@@ -12,32 +12,36 @@ const Game = function () {
     this.locker = false;
 };
 
-Game.create = (data) => {
+Game.create = ({ deck, locker, player, status }) => {
     const instance = new Game();
 
-    instance.deck = Deck.create(data.deck);
-    instance.player = Player.create(data.player);
-    instance.status = data.status;
-    instance.locker = data.locker;
+    instance.deck = Deck.create(deck);
+    instance.player = Player.create(player);
+    instance.status = status;
+    instance.locker = locker;
 
     return instance;
 };
 
-Game.prototype.init = function () {
+Game.prototype.init = async function () {
     this.lock();
-    Displayer.displayNetworkStatus();
+
+    console.log("init");
+
     setInterval(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
 
-    Displayer.updatePlayerScore(this.player.score);
+    Displayer.displayDeck(52);
+    Displayer.displayNetworkStatus();
     Displayer.updateDeckRemainingCards(this.deck.remaining);
+    Displayer.updatePlayerScore(this.player.score);
 
-    getById("#action-deck").click(() => this.start());
-    getById("#action-stop").click(() => this.stop());
-    getById("#action-quit").click(() => this.stop());
-    getById("#action-restart").click(() => this.restart());
-    getById("#action-replay").click(() => this.restart());
-    getById("#action-stand").click(() => this.stand());
-    getById("#action-hit").click(() => this.draw());
+    getById("deck").click(() => this.start());
+    getById("action-stop").click(() => this.stop());
+    getById("action-quit").click(() => this.stop());
+    getById("action-restart").click(() => this.restart());
+    getById("action-replay").click(() => this.restart());
+    getById("action-stand").click(() => this.stand());
+    getById("action-hit").click(() => this.hit());
     get(".endgame").click(() => get(".bj-final-modal").addClass("active").show());
     get(".bj-final-modal").click((e) => {
         if (
@@ -60,12 +64,16 @@ Game.prototype.start = async function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
         return;
     }
+
     this.lock();
+
     console.log("start");
+
     try {
         if (!isOnline()) {
             throw new Error("Please check your network status");
         }
+
         if (!this.deck.isAlreadySet()) {
             await this.deck.shuffle();
         } else if (
@@ -75,8 +83,12 @@ Game.prototype.start = async function () {
             await this.deck.reshuffle();
         }
 
-        getById("#action-deck").click(() => this.draw());
         Displayer.handleStartEvent();
+
+        await Displayer.shuffleDeck();
+
+        getById("deck").click(() => this.hit());
+
         this.status = Constants.GAME_STATUS_RUNNING;
     } catch (error) {
         Displayer.displayErrorMessage(error.message);
@@ -85,31 +97,41 @@ Game.prototype.start = async function () {
     }
 };
 
-Game.prototype.stop = function () {
+Game.prototype.stop = async function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return;
     }
+
     console.log("stop");
 
-    getById("#action-deck").click(() => this.start());
+    getById("deck").click(() => this.start());
+
     Displayer.handleStopEvent();
+
     this.status = Constants.GAME_STATUS_READY;
+
+    if (this.player.score !== 0 || this.deck.remaining !== 52) {
+        await this.deck.reshuffle();
+    }
 
     this.player.score = 0;
     this.player.hand = [];
+
     Displayer.updatePlayerScore(this.player.score);
     Displayer.updateDeckRemainingCards(this.deck.remaining);
 };
 
-Game.prototype.restart = function () {
+Game.prototype.restart = async function () {
     if (
         (!this.isRunning() && this.status !== Constants.GAME_STATUS_FINISHED) ||
         this.player.isHandEmpty()
     ) {
         return;
     }
+
     console.log("restart");
-    this.stop();
+
+    await this.stop();
     this.start();
 };
 
@@ -119,6 +141,7 @@ Game.prototype.stand = async function () {
     }
 
     this.lock();
+
     console.log("stand");
 
     try {
@@ -141,25 +164,32 @@ Game.prototype.stand = async function () {
     }
 };
 
-Game.prototype.draw = async function () {
+Game.prototype.hit = async function () {
     if (this.isLocked() || !this.isRunning() || this.deck.isEmpty()) {
         return;
     }
 
     this.lock();
+
     console.log("draw");
+
     try {
         if (!isOnline()) {
             throw new Error("Please check your network status");
         }
+
         Displayer.handleDrawStart();
+
         const card = await this.deck.draw();
+
         this.player.draw(card);
-        Displayer.displayPlayerCard(card);
+
+        await Displayer.drawCard(card);
         Displayer.updateDeckRemainingCards(this.deck.remaining);
         Displayer.updatePlayerScore(this.player.score);
 
         const hasWon = hasWonAfterDraw(this.player);
+
         if (hasWon !== null) {
             this.status = Constants.GAME_STATUS_FINISHED;
             Displayer.displayEndgame(hasWon);
@@ -168,9 +198,11 @@ Game.prototype.draw = async function () {
         Displayer.displayErrorMessage(error.message);
     } finally {
         Displayer.handleDrawEnd();
+
         if (this.deck.isEmpty()) {
             getById("#action-hit").attr("disabled", true);
         }
+
         this.unlock();
     }
 };
@@ -184,14 +216,14 @@ Game.prototype.cancelDraw = function () {
 };
 
 Game.prototype.resume = function () {
-    get(".deck-container").removeClass("initial-center");
+    get(".main-board").removeClass("init");
     get(".bj-scoreboard").visible();
     getById("#action-restart").visible();
     getById("#action-stop").visible();
     get(".bj-final-modal").removeClass("active").hide();
 
     if (this.status === Constants.GAME_STATUS_RUNNING) {
-        getById("#action-deck").click(() => this.draw());
+        getById("deck").click(() => this.hit());
         getById("#action-hit").removeAttr("disabled");
         getById("#action-stand").removeAttr("disabled");
         get(".bj-actions").visible();
@@ -212,7 +244,7 @@ Game.prototype.resume = function () {
         }
     }
 
-    get("#player-hand").html("");
+    get("#hand").html("");
     for (const card of this.player) {
         Displayer.displayPlayerCard(card);
     }
