@@ -1,0 +1,244 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,700;1,700&display=swap");
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.3em 0;
+}
+
+.col-1 {
+    flex-basis: 8.3333333333%;
+    width: 8.3333333333%;
+    padding: 0.5em 12.5px;
+}
+.col-2 {
+    flex-basis: 16.6666666667%;
+    width: 16.6666666667%;
+    padding: 0.5em 12.5px;
+}
+.col-3 {
+    flex-basis: 25%;
+    width: 25%;
+    padding: 0.5em 12.5px;
+}
+.col-4 {
+    flex-basis: 33.3333333333%;
+    width: 33.3333333333%;
+    padding: 0.5em 12.5px;
+}
+.col-5 {
+    flex-basis: 41.6666666667%;
+    width: 41.6666666667%;
+    padding: 0.5em 12.5px;
+}
+.col-6 {
+    flex-basis: 50%;
+    width: 50%;
+    padding: 0.5em 12.5px;
+}
+.col-7 {
+    flex-basis: 58.3333333333%;
+    width: 58.3333333333%;
+    padding: 0.5em 12.5px;
+}
+
+.col-8 {
+    flex-basis: 66.6666666667%;
+    width: 66.6666666667%;
+    padding: 0.5em 12.5px;
+}
+
+.col-9 {
+    flex-basis: 75%;
+    width: 75%;
+    padding: 0.5em 12.5px;
+}
+
+.col-10 {
+    flex-basis: 83.3333333333%;
+    width: 83.3333333333%;
+    padding: 0.5em 12.5px;
+}
+
+.col-11 {
+    flex-basis: 91.6666666667%;
+    width: 91.6666666667%;
+    padding: 0.5em 12.5px;
+}
+.col-12 {
+    flex-basis: 100%;
+    width: 100%;
+    padding: 0.5em 12.5px;
+}
+
+.flex {
+    display: flex;
+}
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.flex-wrap-reverse {
+    flex-wrap: wrap-reverse;
+}
+.flex-nowrap {
+    flex-wrap: nowrap;
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+.justify-end {
+    justify-content: flex-end;
+}
+.justify-center {
+    justify-content: center;
+}
+.justify-between {
+    justify-content: space-between;
+}
+.justify-around {
+    justify-content: space-around;
+}
+.justify-evenly {
+    justify-content: space-evenly;
+}
+.justify-self-auto {
+    justify-self: auto;
+}
+.justify-self-start {
+    justify-self: start;
+}
+.justify-self-end {
+    justify-self: end;
+}
+.justify-self-center {
+    justify-self: center;
+}
+.justify-self-stretch {
+    justify-self: stretch;
+}
+.items-start {
+    align-items: flex-start;
+}
+.items-end {
+    align-items: flex-end;
+}
+.items-center {
+    align-items: center;
+}
+.self-auto {
+    align-self: auto;
+}
+.self-start {
+    align-self: flex-start;
+}
+.self-end {
+    align-self: flex-end;
+}
+.self-center {
+    align-self: center;
+}
+.self-stretch {
+    align-self: stretch;
+}
+
+.cursor-auto {
+    cursor: auto;
+}
+.cursor-default {
+    cursor: default;
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.cursor-wait {
+    cursor: wait;
+}
+.cursor-text {
+    cursor: text;
+}
+.cursor-move {
+    cursor: move;
+}
+.cursor-help {
+    cursor: help;
+}
+.cursor-not-allowed {
+    cursor: not-allowed;
+}
+
+.p-0 {
+    padding: 0;
+}
+.m-0 {
+    margin: 0;
+}
+.w-100 {
+    width: 100%;
+}
+.h-100 {
+    height: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+.hidden {
+    visibility: hidden;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip > .tooltip-content {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip > .tooltip-content::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover > .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}

@@ -1,13 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blackjack</title>
-    <link rel="stylesheet" href="./style.css" type="text/css" />
-  </head>
-  <body>
-    <script src="./index.js" type="module"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Blackjack</title>
+        <link rel="stylesheet" href="./styles/main.css" type="text/css" />
+        <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>" />
+        <script defer src="./scripts/index.js" type="module"></script>
+    </head>
+    <body>
+        <main>
+            <section id="bj-game-container" class="bj-game-container">
+                <div class="bj-toolbar flex">
+                    <div class="col-4">
+                        <div class="toolbar-actions toolbar-list-left flex items-center">
+                            <img
+                                id="action-stop"
+                                class="toolbar-icon clickable-icon hidden"
+                                src="images/shutdown.svg"
+                                alt="" />
+                            <img
+                                id="action-restart"
+                                class="toolbar-icon clickable-icon hidden"
+                                src="images/reload.svg"
+                                alt="" />
+                        </div>
+                    </div>
+                    <span class="col-8 bj-toolbar-middle">
+                        <div id="game-state-info" class="game-state-info">
+                            <div class="endgame">
+                                <span>This round is over. View details</span>
+                            </div>
+                            <div class="error">
+                                <span id="error-message">Error</span>
+                            </div>
+                        </div>
+                    </span>
+                    <div class="col-4">
+                        <div class="toolbar-list-right flex justify-end items-center">
+                            <div id="info" class="tooltip">
+                                <img class="toolbar-icon" src="images/info.svg" alt="" />
+                                <span class="tooltip-content"
+                                    >Get as close as possible to 21 !</span
+                                >
+                            </div>
+                            <div id="wifi-on" class="tooltip">
+                                <img class="toolbar-icon" src="images/wifi-on.svg" alt="" />
+                                <span class="tooltip-content">Online</span>
+                            </div>
+                            <div id="wifi-off" class="tooltip" style="display: none">
+                                <img class="toolbar-icon" src="images/wifi-off.svg" alt="" />
+                                <span class="tooltip-content">Offline</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bj-board">
+                    <div class="main-board">
+                        <div class="deck-container">
+                            <ul id="deck"></ul>
+                        </div>
+                        <div class="hand-container">
+                            <div id="game-title">
+                                <h1>Blackjack</h1>
+                            </div>
+                            <div id="hand" style="display: none"></div>
+                        </div>
+                    </div>
+                    <div class="bj-actions hidden">
+                        <button id="action-cancel" class="btn-action" style="display: none">
+                            Cancel
+                        </button>
+                        <button id="action-hit" class="btn-action">Hit</button>
+                        <button id="action-stand" class="btn-action" disabled="true">Stand</button>
+                    </div>
+                </div>
+                <div class="bj-scoreboard hidden">
+                    <div class="figure-container">
+                        <div class="tooltip">
+                            <img class="figure-icon" src="images/hand.svg" alt="" />
+                            <span class="tooltip-content">Cards count in the player hand</span>
+                        </div>
+                        <span id="player-score"></span>
+                    </div>
+                    <div class="figure-container">
+                        <div class="tooltip">
+                            <img class="figure-icon" src="images/stack.svg" alt="" />
+                            <span class="tooltip-content">Remaining cards in the deck</span>
+                        </div>
+                        <span id="deck-remaining"></span>
+                    </div>
+                </div>
+                <div class="bj-final-modal">
+                    <div class="modal-container">
+                        <span class="modal-close">&times;</span>
+                        <div class="modal-title"></div>
+                        <div class="modal-content"></div>
+                        <div class="modal-actions">
+                            <button id="action-replay" class="btn-action">Play again</button>
+                            <button id="action-quit" class="btn-action">Quit</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer></footer>
+    </body>
 </html>
