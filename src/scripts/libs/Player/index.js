@@ -37,7 +37,8 @@ Player.prototype.draw = function (card) {
 };
 
 /**
- * @returns {boolean}
+ * Returns true if the player hand is empty, false otherwise
+ * @returns {boolean} wether the player's hand is empty
  */
 Player.prototype.isHandEmpty = function () {
     return this.hand.length === 0;
