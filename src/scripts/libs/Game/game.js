@@ -36,6 +36,7 @@ Game.prototype.init = async function () {
     Displayer.updatePlayerScore(this.player.score);
 
     getById("deck").click(() => this.start());
+    getById("game-title").click(() => this.start());
     getById("action-stop").click(() => this.stop());
     getById("action-quit").click(() => this.stop());
     getById("action-restart").click(() => this.restart());
@@ -216,11 +217,11 @@ Game.prototype.cancelDraw = function () {
 };
 
 Game.prototype.resume = function () {
-    get(".main-board").removeClass("init");
     get(".bj-scoreboard").visible();
     getById("#action-restart").visible();
     getById("#action-stop").visible();
     get(".bj-final-modal").removeClass("active").hide();
+    getById("game-title").hide();
 
     if (this.status === Constants.GAME_STATUS_RUNNING) {
         getById("deck").click(() => this.hit());
@@ -244,7 +245,7 @@ Game.prototype.resume = function () {
         }
     }
 
-    get("#hand").html("");
+    get("#hand").html("").show();
     for (const card of this.player) {
         Displayer.displayPlayerCard(card);
     }

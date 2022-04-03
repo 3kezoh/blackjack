@@ -60,11 +60,11 @@ Displayer.displayDeck = (remaining) => {
 
     for (let i = 0; i < remaining; i++) {
         const cardElement = document.createElement("li");
-
+        const cardColor = Math.floor(Math.random() * 11) % 2 === 0 ? "card-red" : "card-blue";
         cardElement.dataset.x = -i / 3;
         cardElement.dataset.y = -i / 4;
 
-        cardElement.classList.add("card");
+        cardElement.classList.add("card", cardColor);
         cardElement.style.zIndex = i;
         cardElement.style.transform = `translate(${cardElement.dataset.x}px, ${cardElement.dataset.y}px)`;
 
@@ -197,19 +197,20 @@ Displayer.handleStandEvent = () => {
 Displayer.handleStartEvent = () => {
     getById("#action-stand").attr("disabled", true);
     getById("#action-stop").visible();
+    getById("hand").show();
+    getById("game-title").hide();
     get(".bj-scoreboard").visible();
     get(".bj-actions").visible();
-    get(".main-board").removeClass("init");
     get(".bj-final-modal").removeClass("active").hide();
 };
 
 Displayer.handleStopEvent = () => {
-    getById("hand").html("");
+    getById("hand").html("").hide();
+    getById("game-title").show();
     getById("#action-stop").hidden();
     getById("#action-restart").hidden();
     get(".bj-scoreboard").hidden();
     get(".bj-actions").hidden();
-    get(".main-board").addClass("init");
     get(".bj-final-modal").removeClass("active").hide();
     get(".endgame").hide();
 };

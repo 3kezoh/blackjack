@@ -12,9 +12,6 @@
         <script defer src="./scripts/index.js" type="module"></script>
     </head>
     <body>
-        <header>
-            <h1 class="text-center">Blackjack</h1>
-        </header>
         <main>
             <section id="bj-game-container" class="bj-game-container">
                 <div class="bj-toolbar flex">
@@ -62,12 +59,15 @@
                     </div>
                 </div>
                 <div class="bj-board">
-                    <div class="main-board init">
+                    <div class="main-board">
                         <div class="deck-container">
                             <ul id="deck"></ul>
                         </div>
                         <div class="hand-container">
-                            <div id="hand"></div>
+                            <div id="game-title">
+                                <h1>Blackjack</h1>
+                            </div>
+                            <div id="hand" style="display: none"></div>
                         </div>
                     </div>
                     <div class="bj-actions hidden">
