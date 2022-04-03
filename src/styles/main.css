@@ -424,6 +424,15 @@ main {
     .main-board {
         grid-template-columns: 1fr;
         grid-template-rows: 50% 50%;
+        height: 80%;
+    }
+
+    #deck {
+        transform: translate(calc(-88.75px / 2), calc(-135px / 2));
+    }
+
+    #deck:hover {
+        transform: translate(calc(-88.75px / 2), calc(-135px / 2));
     }
 
     .card {
