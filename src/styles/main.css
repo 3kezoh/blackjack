@@ -127,8 +127,17 @@ main {
 }
 
 #deck .card {
-    border: 1px solid white;
+    border: 5px solid white;
     position: absolute;
+    background-size: 24px 24px;
+    background-image: radial-gradient(
+            transparent 10px,
+            #ffffff 10px,
+            #ffffff 12px,
+            transparent 12px
+        ),
+        radial-gradient(transparent 10px, #ffffff 10px, #ffffff 12px, transparent 12px);
+    background-position: 0 0, 12px 12px;
 }
 
 .card.card-red {
