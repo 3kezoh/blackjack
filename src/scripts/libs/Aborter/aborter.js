@@ -31,6 +31,9 @@ Aborter.getSignal = (key) => Aborter.get(key)?.signal;
 /**
  * @param {string} key
  */
-Aborter.abort = (key) => Aborter.get(key)?.abort();
+Aborter.abort = (key) => {
+    Aborter.get(key)?.abort();
+    Aborter.set(key);
+};
 
 export default Aborter;

@@ -4,6 +4,7 @@ import Constants from "../../constants.js";
 import Displayer from "../Displayer/displayer.js";
 import Card from "../Card/index.js";
 import { clearSelectorEvents, get, getAll, getById } from "../Selector/selector.js";
+import Aborter from "../Aborter/aborter.js";
 
 const Game = function () {
     this.deck = new Deck();
@@ -25,8 +26,6 @@ Game.create = ({ deck, locker, player, status }) => {
 
 Game.prototype.init = async function () {
     this.lock();
-
-    console.log("init");
 
     setInterval(Displayer.displayNetworkStatus, Constants.NETWORK_STATUS_CHECK * 1000);
 
@@ -68,8 +67,6 @@ Game.prototype.start = async function () {
 
     this.lock();
 
-    console.log("start");
-
     try {
         if (!isOnline()) {
             throw new Error("Please check your network status");
@@ -83,9 +80,10 @@ Game.prototype.start = async function () {
         ) {
             await this.deck.reshuffle();
         }
+        Displayer.updatePlayerScore(this.player.score);
+        Displayer.updateDeckRemainingCards(this.deck.remaining);
 
         Displayer.handleStartEvent();
-
         await Displayer.shuffleDeck();
 
         getById("deck").click(() => this.hit());
@@ -98,31 +96,21 @@ Game.prototype.start = async function () {
     }
 };
 
-Game.prototype.stop = async function () {
+Game.prototype.stop = function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return;
     }
-
-    console.log("stop");
-
     getById("deck").click(() => this.start());
 
     Displayer.handleStopEvent();
 
     this.status = Constants.GAME_STATUS_READY;
 
-    if (this.player.score !== 0 || this.deck.remaining !== 52) {
-        await this.deck.reshuffle();
-    }
-
     this.player.score = 0;
     this.player.hand = [];
-
-    Displayer.updatePlayerScore(this.player.score);
-    Displayer.updateDeckRemainingCards(this.deck.remaining);
 };
 
-Game.prototype.restart = async function () {
+Game.prototype.restart = function () {
     if (
         (!this.isRunning() && this.status !== Constants.GAME_STATUS_FINISHED) ||
         this.player.isHandEmpty()
@@ -130,9 +118,7 @@ Game.prototype.restart = async function () {
         return;
     }
 
-    console.log("restart");
-
-    await this.stop();
+    this.stop();
     this.start();
 };
 
@@ -140,10 +126,7 @@ Game.prototype.stand = async function () {
     if (this.isLocked() || !this.isRunning() || this.player.isHandEmpty()) {
         return;
     }
-
     this.lock();
-
-    console.log("stand");
 
     try {
         if (!isOnline()) {
@@ -169,10 +152,7 @@ Game.prototype.hit = async function () {
     if (this.isLocked() || !this.isRunning() || this.deck.isEmpty()) {
         return;
     }
-
     this.lock();
-
-    console.log("draw");
 
     try {
         if (!isOnline()) {
@@ -213,7 +193,7 @@ Game.prototype.cancelDraw = function () {
         return;
     }
 
-    console.log("cancel draw");
+    Aborter.abort(Constants.ABORT_KEY_DRAW);
 };
 
 Game.prototype.resume = function () {
@@ -222,6 +202,11 @@ Game.prototype.resume = function () {
     getById("#action-stop").visible();
     get(".bj-final-modal").removeClass("active").hide();
     getById("game-title").hide();
+
+    get("#hand").html("").show();
+    for (const card of this.player) {
+        Displayer.displayPlayerCard(card);
+    }
 
     if (this.status === Constants.GAME_STATUS_RUNNING) {
         getById("deck").click(() => this.hit());
@@ -243,11 +228,6 @@ Game.prototype.resume = function () {
         } else {
             Displayer.displayEndgame(hasWonAfterDraw(this.player));
         }
-    }
-
-    get("#hand").html("").show();
-    for (const card of this.player) {
-        Displayer.displayPlayerCard(card);
     }
 };
 

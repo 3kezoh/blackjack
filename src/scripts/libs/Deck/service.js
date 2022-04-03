@@ -1,10 +1,16 @@
+import Constants from "../../constants.js";
+import Aborter from "../Aborter/aborter.js";
+
 const SHUFFLE = (deck_id) =>
     `https://deckofcardsapi.com/api/deck/${deck_id || "new"}/shuffle/?deck_count=1`;
 
 const DRAW = (deck_id, count) =>
     `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=${count}`;
 
-export default function DeckService() {}
+export default function DeckService() {
+    Aborter.set(Constants.ABORT_KEY_DRAW);
+    Aborter.set(Constants.ABORT_KEY_SHUFFLE);
+}
 
 /**
  * @typedef {Object} ShufflePayload
@@ -23,7 +29,9 @@ export default function DeckService() {}
  */
 DeckService.prototype.shuffle = async function (deck_id) {
     try {
-        const response = await fetch(SHUFFLE(deck_id));
+        const response = await fetch(SHUFFLE(deck_id), {
+            signal: Aborter.getSignal(Constants.ABORT_KEY_SHUFFLE),
+        });
 
         if (!response.ok) {
             throw new Error("DeckService.prototype.shuffle response not ok");
@@ -57,7 +65,9 @@ DeckService.prototype.shuffle = async function (deck_id) {
  */
 DeckService.prototype.draw = async function (deck_id, count) {
     try {
-        const response = await fetch(DRAW(deck_id, count));
+        const response = await fetch(DRAW(deck_id, count), {
+            signal: Aborter.getSignal(Constants.ABORT_KEY_DRAW),
+        });
 
         if (!response.ok) {
             throw new Error("DeckService.prototype.draw response not ok");

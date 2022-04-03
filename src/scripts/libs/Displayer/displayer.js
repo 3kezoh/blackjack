@@ -21,21 +21,21 @@ Displayer.displayErrorMessage = (message) => {
 
     getById("error-message").text(message);
     get(".error").show();
-    navigator.vibrate(500);
+    isMobile() && navigator.vibrate(500);
     errorTimeout = setTimeout(() => get(".error").hide(), 2000);
 };
 
 Displayer.displayEndgame = (hasWon, nextCard = null) => {
     get(".bj-actions").hidden();
     if (hasWon) {
-        navigator.vibrate([100, 100, 250]);
+        isMobile() && navigator.vibrate([100, 100, 250]);
         Displayer.animateWinningCards();
         getById("action-replay").text("Play again");
         get(".modal-content").html(
             nextCard ? getModalContentNextCard(nextCard) : getModalContentAutoWin()
         );
     } else {
-        navigator.vibrate([250, 500]);
+        isMobile() && navigator.vibrate([250, 500]);
         Displayer.animateLoosingCards();
         getById("action-replay").text("Try again");
         get(".modal-content").html(
@@ -179,7 +179,7 @@ Displayer.updateDeckRemainingCards = (remaining) => {
 };
 
 Displayer.handleDrawStart = () => {
-    navigator.vibrate(250);
+    isMobile() && navigator.vibrate(250);
     getById("#action-hit").attr("disabled", true);
     getById("#action-stand").attr("disabled", true);
 };
@@ -320,4 +320,10 @@ const getModalContentNextCard = ({ image, currentScore, value }) =>
         <h2 id="final-score">${currentScore + value}</h2>
     </div>`;
 
+const isMobile = () => {
+    const nav = navigator.userAgent.toLowerCase();
+    return (
+        nav.match(/iphone/i) || nav.match(/ipod/i) || nav.match(/ipad/i) || nav.match(/android/i)
+    );
+};
 export default Displayer;
