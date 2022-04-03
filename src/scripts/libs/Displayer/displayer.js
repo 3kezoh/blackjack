@@ -21,21 +21,21 @@ Displayer.displayErrorMessage = (message) => {
 
     getById("error-message").text(message);
     get(".error").show();
-    navigator.vibrate(500);
+    isMobile() && navigator.vibrate(500);
     errorTimeout = setTimeout(() => get(".error").hide(), 2000);
 };
 
 Displayer.displayEndgame = (hasWon, nextCard = null) => {
     get(".bj-actions").hidden();
     if (hasWon) {
-        navigator.vibrate([100, 100, 250]);
+        isMobile() && navigator.vibrate([100, 100, 250]);
         Displayer.animateWinningCards();
         getById("action-replay").text("Play again");
         get(".modal-content").html(
             nextCard ? getModalContentNextCard(nextCard) : getModalContentAutoWin()
         );
     } else {
-        navigator.vibrate([250, 500]);
+        isMobile() && navigator.vibrate([250, 500]);
         Displayer.animateLoosingCards();
         getById("action-replay").text("Try again");
         get(".modal-content").html(
@@ -60,11 +60,11 @@ Displayer.displayDeck = (remaining) => {
 
     for (let i = 0; i < remaining; i++) {
         const cardElement = document.createElement("li");
-
+        const cardColor = Math.floor(Math.random() * 11) % 2 === 0 ? "card-red" : "card-blue";
         cardElement.dataset.x = -i / 3;
         cardElement.dataset.y = -i / 4;
 
-        cardElement.classList.add("card");
+        cardElement.classList.add("card", cardColor);
         cardElement.style.zIndex = i;
         cardElement.style.transform = `translate(${cardElement.dataset.x}px, ${cardElement.dataset.y}px)`;
 
@@ -179,7 +179,7 @@ Displayer.updateDeckRemainingCards = (remaining) => {
 };
 
 Displayer.handleDrawStart = () => {
-    navigator.vibrate(250);
+    isMobile() && navigator.vibrate(250);
     getById("#action-hit").attr("disabled", true);
     getById("#action-stand").attr("disabled", true);
 };
@@ -197,19 +197,20 @@ Displayer.handleStandEvent = () => {
 Displayer.handleStartEvent = () => {
     getById("#action-stand").attr("disabled", true);
     getById("#action-stop").visible();
+    getById("hand").show();
+    getById("game-title").hide();
     get(".bj-scoreboard").visible();
     get(".bj-actions").visible();
-    get(".main-board").removeClass("init");
     get(".bj-final-modal").removeClass("active").hide();
 };
 
 Displayer.handleStopEvent = () => {
-    getById("hand").html("");
+    getById("hand").html("").hide();
+    getById("game-title").show();
     getById("#action-stop").hidden();
     getById("#action-restart").hidden();
     get(".bj-scoreboard").hidden();
     get(".bj-actions").hidden();
-    get(".main-board").addClass("init");
     get(".bj-final-modal").removeClass("active").hide();
     get(".endgame").hide();
 };
@@ -319,4 +320,10 @@ const getModalContentNextCard = ({ image, currentScore, value }) =>
         <h2 id="final-score">${currentScore + value}</h2>
     </div>`;
 
+const isMobile = () => {
+    const nav = navigator.userAgent.toLowerCase();
+    return (
+        nav.match(/iphone/i) || nav.match(/ipod/i) || nav.match(/ipad/i) || nav.match(/android/i)
+    );
+};
 export default Displayer;

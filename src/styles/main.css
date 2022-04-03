@@ -1,8 +1,15 @@
 @import "./utils.css";
 
+body {
+    font-family: "Roboto", sans-serif;
+}
+
 main {
     width: 100%;
-    font-family: "Roboto", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .bj-game-container {
@@ -101,10 +108,6 @@ main {
     transform: 2s;
 }
 
-.init {
-    grid-template-columns: 1fr 0;
-}
-
 #deck {
     cursor: pointer;
     list-style: none;
@@ -124,9 +127,16 @@ main {
 }
 
 #deck .card {
-    background-color: red;
     border: 1px solid white;
     position: absolute;
+}
+
+.card.card-red {
+    background-color: #c53635;
+}
+
+.card.card-blue {
+    background-color: #4343be;
 }
 
 #hand {
@@ -146,6 +156,7 @@ main {
 .main-board .hand-container {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .main-board .hand-container .hand {
@@ -155,6 +166,23 @@ main {
     width: 100%;
     height: auto;
     padding: 0 2em;
+}
+#game-title {
+    cursor: pointer;
+    border-radius: 4em;
+    padding: 2em;
+    background-color: #266b28;
+    box-shadow: inset 0px 3px 3px 2px #0000004a;
+}
+
+#game-title h1 {
+    font-size: 4rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #d8c66c;
+    font-family: "Lobster Two", cursive;
+    font-style: italic;
+    text-align: center;
 }
 
 .bj-board .bj-actions {
@@ -389,27 +417,17 @@ main {
         position: static;
     }
 
+    #game-title h1 {
+        word-break: break-all;
+    }
+
     .main-board {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        grid-template-rows: 50% 50%;
     }
 
-    .main-board .hand-container {
-        flex: 0.65;
-    }
-
-    .main-board .deck-container {
-        flex: 0.35;
-    }
-
-    .main-board .deck-container.initial-center {
-        margin-left: 0;
-    }
-
-    .deck > img {
-        height: 125px;
-    }
-
-    .hand-container .hand .hand-card {
+    .card {
+        width: 88.75px;
         height: 135px;
     }
 

@@ -38,7 +38,7 @@ App.prototype.setKeyboardHandler = function () {
                     this.game.stand();
                     break;
                 case "KeyD":
-                    this.game.draw();
+                    this.game.hit();
                     break;
                 case "KeyC":
                     this.game.cancelDraw();
