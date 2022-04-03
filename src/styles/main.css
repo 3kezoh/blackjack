@@ -417,6 +417,12 @@ main {
         height: 95vh;
     }
 
+    .bj-board {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .bj-toolbar .game-state-info {
         left: 0;
         width: 100%;
@@ -442,6 +448,10 @@ main {
 
     #deck:hover {
         transform: translate(calc(-88.75px / 2), calc(-135px / 2));
+    }
+
+    #deck .card {
+        border: 3px solid white;
     }
 
     .card {
