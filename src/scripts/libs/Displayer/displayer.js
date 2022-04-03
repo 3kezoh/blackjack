@@ -50,6 +50,7 @@ Displayer.displayEndgame = (hasWon, nextCard = null) => {
 };
 
 /**
+ * Displays the deck
  * @param {number} remaining
  */
 Displayer.displayDeck = (remaining) => {
@@ -145,7 +146,7 @@ Displayer.drawCard = async function (card) {
 };
 
 /**
- * Display a card in the player's hand
+ * Displays a card in the player's hand
  * @param {Card} card
  * @return {Promise<Animation>}
  */
@@ -170,30 +171,53 @@ Displayer.displayPlayerCard = async function ({ image }) {
     return addCardToHandAnimation.finished;
 };
 
+/**
+ * Displays the player's score
+ * @param {number} score
+ */
 Displayer.updatePlayerScore = (score) => {
     get("#player-score").text(score);
 };
 
+/**
+ * Displays the remaining cards in the deck
+ * @param {number} remaining
+ */
 Displayer.updateDeckRemainingCards = (remaining) => {
     get("#deck-remaining").text(remaining);
 };
 
+/**
+ * Updates the user interface when the player starts to draw a card.
+ * Disable action buttons and vibrate on mobiles
+ */
 Displayer.handleDrawStart = () => {
     isMobile() && navigator.vibrate(250);
     getById("#action-hit").attr("disabled", true);
     getById("#action-stand").attr("disabled", true);
 };
 
+/**
+ * Updates the user interface when the player finishes drawing a card.
+ * Activate action buttons
+ */
 Displayer.handleDrawEnd = () => {
     getById("#action-hit").removeAttr("disabled");
     getById("#action-restart").visible();
     getById("#action-stand").removeAttr("disabled");
 };
 
+/**
+ * Updates the user interface when the player stands.
+ * Hides action buttons
+ */
 Displayer.handleStandEvent = () => {
     get(".bj-actions").hidden();
 };
 
+/**
+ * Updates the user interface when the game starts.
+ */
 Displayer.handleStartEvent = () => {
     getById("#action-stand").attr("disabled", true);
     getById("#action-stop").visible();
@@ -204,6 +228,9 @@ Displayer.handleStartEvent = () => {
     get(".bj-final-modal").removeClass("active").hide();
 };
 
+/**
+ * Updates the user interface when the game stops.
+ */
 Displayer.handleStopEvent = () => {
     getById("hand").html("").hide();
     getById("game-title").show();
@@ -215,6 +242,9 @@ Displayer.handleStopEvent = () => {
     get(".endgame").hide();
 };
 
+/**
+ * Animates the cards when the user wins
+ */
 Displayer.animateWinningCards = () => {
     const cards = getAll("#hand .card");
 
@@ -251,6 +281,9 @@ Displayer.animateWinningCards = () => {
     }, Constants.WINNING_CARDS_DELAY * 1000);
 };
 
+/**
+ * Animates the cards when the user loses
+ */
 Displayer.animateLoosingCards = () => {
     const cards = getAll("#hand .card");
 
@@ -320,6 +353,10 @@ const getModalContentNextCard = ({ image, currentScore, value }) =>
         <h2 id="final-score">${currentScore + value}</h2>
     </div>`;
 
+/**
+ * Returns true if the site on a mobile, false otherwise
+ * @returns {boolean} whether the site is on a mobile or not
+ */
 const isMobile = () => {
     const nav = navigator.userAgent.toLowerCase();
     return (

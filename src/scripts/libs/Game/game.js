@@ -24,6 +24,12 @@ Game.create = ({ deck, locker, player, status }) => {
     return instance;
 };
 
+/**
+ * Initialize the game:
+ * - Displays the deck, remaining cards, player score and network status
+ * - Adds event listeners to the buttons
+ * - Resumes the game if the `GAME_STATUS` is `READY`
+ */
 Game.prototype.init = async function () {
     this.lock();
 
@@ -60,6 +66,12 @@ Game.prototype.init = async function () {
     this.unlock();
 };
 
+/**
+ * Starts the game if `status` is `GAME_STATUS_READY`
+ * - Shuffles the deck on the user interface
+ * - Allows the player to draw
+ * @returns {Promise<void>}
+ */
 Game.prototype.start = async function () {
     if (this.status !== Constants.GAME_STATUS_READY) {
         return;
@@ -96,6 +108,10 @@ Game.prototype.start = async function () {
     }
 };
 
+/**
+ * Stops the game unless `status` is `GAME_STATUS_READY`
+ * @returns {Promise<void>}
+ */
 Game.prototype.stop = function () {
     if (this.status === Constants.GAME_STATUS_READY) {
         return;
@@ -110,6 +126,10 @@ Game.prototype.stop = function () {
     this.player.hand = [];
 };
 
+/**
+ * Restarts the game
+ * @returns {void}
+ */
 Game.prototype.restart = function () {
     if (
         (!this.isRunning() && this.status !== Constants.GAME_STATUS_FINISHED) ||
@@ -122,6 +142,12 @@ Game.prototype.restart = function () {
     this.start();
 };
 
+/**
+ * Executed when the player decides to stand
+ * - Checks if the player wins
+ * - Sets `status` to `GAME_STATE_FINISHED`
+ * @returns {Promise<void>}
+ */
 Game.prototype.stand = async function () {
     if (this.isLocked() || !this.isRunning() || this.player.isHandEmpty()) {
         return;
@@ -148,6 +174,11 @@ Game.prototype.stand = async function () {
     }
 };
 
+/**
+ * Executed when the player decides to hit
+ * - Checks if the player wins
+ * @returns {Promise<void>}
+ */
 Game.prototype.hit = async function () {
     if (this.isLocked() || !this.isRunning() || this.deck.isEmpty()) {
         return;
@@ -188,6 +219,10 @@ Game.prototype.hit = async function () {
     }
 };
 
+/**
+ * Executed when the player decides to cancel the draw
+ * @returns {void}
+ */
 Game.prototype.cancelDraw = function () {
     if (!this.isLocked() || !this.isRunning()) {
         return;
@@ -196,6 +231,9 @@ Game.prototype.cancelDraw = function () {
     Aborter.abort(Constants.ABORT_KEY_DRAW);
 };
 
+/**
+ * Resumes the game
+ */
 Game.prototype.resume = function () {
     get(".bj-scoreboard").visible();
     getById("#action-restart").visible();
@@ -239,22 +277,46 @@ Game.prototype.isRunning = function () {
     return this.status === Constants.GAME_STATUS_RUNNING;
 };
 
+/**
+ * @returns {boolean} wether or not the game is locked
+ */
 Game.prototype.isLocked = function () {
     return this.locker;
 };
 
+/**
+ * Used to prevent other requests from being processed
+ */
 Game.prototype.lock = function () {
     this.locker = true;
 };
 
+/**
+ * Used to enable the processing of other requests
+ */
 Game.prototype.unlock = function () {
     this.locker = false;
 };
 
+/**
+ * Returns true if the player has won according to his score, null otherwise.
+ * @param {Player} player
+ * @returns {boolean | null}
+ */
 const hasWonAfterDraw = ({ score }) => (score >= 21 ? score === 21 : null);
 
+/**
+ * Returns true if the player has won after drawing a last `card`, false otherwise.
+ * @param {Player} player
+ * @param {Card} card
+ * @returns
+ */
 const hasWonAfterStand = ({ score }, { value }) => score + value > 21;
 
+/**
+ * Returns the online status of the browser
+ * @returns {boolean} wether the browser in online
+ */
 const isOnline = () => window.navigator.onLine;
 
 export default Game;
